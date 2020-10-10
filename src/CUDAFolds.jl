@@ -1,5 +1,26 @@
 module CUDAFolds
 
-# Write your package code here.
+export CUDAEx, foldx_cuda, transduce_cuda
+
+import FLoops
+using CUDA
+using Core: Typeof
+using Core.Compiler: return_type
+using GPUArrays: @allowscalar
+using InitialValues: InitialValue, asmonoid
+using Transducers:
+    Map, Reduced, Transducer, combine, complete, next, opcompose, reduced, start, unreduced
+
+# TODO: Don't import internals from Transducers:
+using Transducers:
+    DefaultInit,
+    DefaultInitOf,
+    EmptyResultError,
+    IdentityTransducer,
+    _reducingfunction,
+    extract_transducer
+
+include("kernels.jl")
+include("api.jl")
 
 end
