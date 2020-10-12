@@ -20,7 +20,7 @@ end
     seed = 123456789
     CUDA.seed!(seed)
     rng = MersenneTwister(seed)
-    @testset for n in [10^7, 10^8, 10^9]
+    @testset for n in [10^7, 10^8]
         xs = CUDA.rand(n)
         xs_cpu = Array(xs)
         @test findminmax(xs) == findminmax(xs_cpu) == findminmax_base(xs_cpu)
