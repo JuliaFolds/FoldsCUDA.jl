@@ -1,11 +1,11 @@
 module TestDoctest
 
-using CUDAFolds
+using FoldsCUDA
 using Documenter: doctest
 using Test
 
 @testset "doctest" begin
-    doctest(CUDAFolds, manual = false)
+    doctest(FoldsCUDA, manual = false)
 end
 
 end  # module

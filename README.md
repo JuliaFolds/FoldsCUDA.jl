@@ -1,6 +1,6 @@
-# CUDAFolds
+# FoldsCUDA
 
-CUDAFolds.jl provides
+FoldsCUDA.jl provides
 [Transducers.jl](https://github.com/JuliaFolds/Transducers.jl)-compatible
 fold (reduce) implemented using
 [CUDA.jl](https://github.com/JuliaGPU/CUDA.jl).  This brings the
@@ -22,11 +22,11 @@ information.
 
 ### `findmax` using FLoops.jl
 
-You can pass CUDA executor `CUDAFolds.CUDAEx()` to `@floop` to run a
+You can pass CUDA executor `FoldsCUDA.CUDAEx()` to `@floop` to run a
 parallel `for` loop on GPU:
 
 ```julia
-julia> using CUDAFolds, CUDA, FLoops
+julia> using FoldsCUDA, CUDA, FLoops
 
 julia> using GPUArrays: @allowscalar
 

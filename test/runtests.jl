@@ -1,4 +1,4 @@
-module TestCUDAFolds
+module TestFoldsCUDA
 
 using Test
 

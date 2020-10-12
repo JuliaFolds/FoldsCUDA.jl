@@ -1,4 +1,4 @@
-module CUDAFolds
+module FoldsCUDA
 
 export CUDAEx, foldx_cuda, transduce_cuda
 
@@ -27,6 +27,6 @@ include("api.jl")
 @doc let path = joinpath(dirname(@__DIR__), "README.md")
     include_dependency(path)
     replace(read(path, String), r"^```julia"m => "```jldoctest README")
-end CUDAFolds
+end FoldsCUDA
 
 end
