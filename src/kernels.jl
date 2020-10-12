@@ -171,19 +171,8 @@ end
     while c != 0
         sync_threads()
         if t + s <= bound && iseven(m)
-            # let ((imin1, xmin1), (imax1, xmax1)) = shared[t],
-            #     ((imin2, xmin2), (imax2, xmax2)) = shared[t+s]
-
-            #     blockIdx().x == 1 &&
-            #         @cuprintln("t=$t, s=$s, m=$m, c=$c, bound=$bound, shared[t]=((($imin1, $xmin1), ($imax1, $xmax1))), shared[t+s]=((($imin2, $xmin2), ($imax2, $xmax2)))")
-            # end
             @inbounds shared[t] = _combine(rf, shared[t], shared[t+s])
             m >>= 1
-        else
-            # let ((imin1, xmin1), (imax1, xmax1)) = shared[t]
-            #     blockIdx().x == 1 &&
-            #         @cuprintln("t=$t, s=$s, m=$m, c=$c, bound=$bound, shared[t]=((($imin1, $xmin1), ($imax1, $xmax1)))")
-            # end
         end
         s <<= 1
         c >>= 1
