@@ -11,7 +11,7 @@ const TEST_GPU = lowercase(get(ENV, "CUDAFOLDS_JL_TEST_GPU", "true")) == "true"
     include(file)
 end
 
-@testset "$file" for file in sort([
+@testset "nogpu/$file" for file in sort([
     file
     for
     file in readdir(joinpath(@__DIR__, "nogpu")) if
