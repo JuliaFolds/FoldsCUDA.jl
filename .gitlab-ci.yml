@@ -1,0 +1,24 @@
+include: https://raw.githubusercontent.com/JuliaGPU/gitlab-ci/master/templates/v6.yml
+
+.run-test:
+  script:
+    - julia -e 'using Pkg; Pkg.add(name="Run", version="0.1")'
+    - julia -e 'using Run; Run.prepare_test()'
+    - julia -e 'using Run; Run.test()'
+
+test:1:
+  extends:
+    - .julia:1
+    - .test
+    - .run-test
+  tags:
+      - nvidia
+
+test:nightly:
+  extends:
+    - .julia:nightly
+    - .test
+    - .run-test
+  tags:
+      - nvidia
+  allow_failure: true
