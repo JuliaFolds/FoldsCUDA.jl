@@ -22,3 +22,8 @@ test:nightly:
   tags:
       - nvidia
   allow_failure: true
+
+coverage:
+  extends:
+    - .julia:1
+    - .coverage
