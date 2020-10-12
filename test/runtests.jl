@@ -1,5 +1,7 @@
 module TestCUDAFolds
 
+using Test
+
 const TEST_GPU = lowercase(get(ENV, "CUDAFOLDS_JL_TEST_GPU", "true")) == "false"
 
 if TEST_GPU
