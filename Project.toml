@@ -12,10 +12,10 @@ SplittablesBase = "171d559e-b47b-412a-8079-5efa626c420e"
 Transducers = "28d57a85-8fef-5791-bfe6-a80928e7c999"
 
 [compat]
+CUDA = "2"
+FLoops = "0.1"
+GPUArrays = "6"
+InitialValues = "0.2"
+SplittablesBase = "0.1"
+Transducers = "0.4"
 julia = "1"
-
-[extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-[targets]
-test = ["Test"]
