@@ -1,6 +1,6 @@
 using Transducers
 using CUDA
-using CUDAFolds
+using FoldsCUDA
 using FLoops
 
 function findminmax(xs, ex = xs isa CuArray ? CUDAEx() : ThreadedEx())
