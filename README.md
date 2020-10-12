@@ -4,10 +4,10 @@ FoldsCUDA.jl provides
 [Transducers.jl](https://github.com/JuliaFolds/Transducers.jl)-compatible
 fold (reduce) implemented using
 [CUDA.jl](https://github.com/JuliaGPU/CUDA.jl).  This brings the
-transducers and monoid combinators implemented in Transducers.jl to
-GPU.  Furthermore, using
-[FLoops.jl](https://github.com/JuliaFolds/FLoops.jl), you can run
-write parallel `for` loops that run on GPU.
+transducers and reducing function combinators implemented in
+Transducers.jl to GPU.  Furthermore, using
+[FLoops.jl](https://github.com/JuliaFolds/FLoops.jl), you can write
+parallel `for` loops that run on GPU.
 
 ## API
 
@@ -15,7 +15,9 @@ write parallel `for` loops that run on GPU.
   [`Transducers.foldxt`](https://juliafolds.github.io/Transducers.jl/dev/reference/manual/#Transducers.foldxt).
 * `CUDAEx`: a parallel loop executor for FLoops.jl.
 
-See the documentation of Transducers.jl and FLoops.jl for more
+See the documentation of
+[Transducers.jl](https://juliafolds.github.io/Transducers.jl/dev/) and
+[FLoops.jl](https://juliafolds.github.io/FLoops.jl/dev/) for more
 information.
 
 ## Examples
