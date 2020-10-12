@@ -21,6 +21,9 @@ end
     CUDA.seed!(seed)
     rng = MersenneTwister(seed)
     @testset for n in [10^7, 10^8, 10^9]
+        GC.gc(true)
+        @info "Ran `GC.gc(true)` (n = $n)"
+        CUDA.memory_status()
         xs = CUDA.rand(n)
         xs_cpu = Array(xs)
         @test findminmax(xs) == findminmax(xs_cpu) == findminmax_base(xs_cpu)
