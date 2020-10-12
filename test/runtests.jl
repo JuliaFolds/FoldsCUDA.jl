@@ -4,12 +4,11 @@ using Test
 
 const TEST_GPU = lowercase(get(ENV, "CUDAFOLDS_JL_TEST_GPU", "true")) == "true"
 
-if TEST_GPU
-    @testset "$file" for file in sort([
-        file for file in readdir(@__DIR__) if match(r"^test_.*\.jl$", file) !== nothing
-    ])
-        include(file)
-    end
+@testset "$file" for file in sort([
+    file for file in readdir(@__DIR__) if match(r"^test_.*\.jl$", file) !== nothing
+])
+    TEST_GPU || continue  # branch inside `for` loop for printing skipped tests
+    include(file)
 end
 
 @testset "$file" for file in sort([
