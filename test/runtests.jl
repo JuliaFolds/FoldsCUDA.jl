@@ -2,7 +2,7 @@ module TestCUDAFolds
 
 using Test
 
-const TEST_GPU = lowercase(get(ENV, "CUDAFOLDS_JL_TEST_GPU", "true")) == "false"
+const TEST_GPU = lowercase(get(ENV, "CUDAFOLDS_JL_TEST_GPU", "true")) == "true"
 
 if TEST_GPU
     @testset "$file" for file in sort([
