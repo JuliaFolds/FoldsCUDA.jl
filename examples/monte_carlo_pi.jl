@@ -1,7 +1,18 @@
+# # Computing π using Monte-Carlo method
+
 using CUDA
 using FLoops
 using FoldsCUDA
+
+# [Random123.jl](https://github.com/sunoru/Random123.jl)
+# [Counter-based random number generator (CBRNG)](https://en.wikipedia.org/wiki/Counter-based_random_number_generator_(CBRNG))
+# [documentation](https://sunoru.github.io/RandomNumbers.jl/stable/man/random123/)
+
 using Random123
+
+# In this example, we use
+# [`Random123.Philox2x`](https://sunoru.github.io/RandomNumbers.jl/stable/lib/random123/#Random123.Philox2x)
+# whose period is `typemax(UInt64)` (by default).
 
 function counters(n)
     stride = typemax(UInt64) ÷ n
