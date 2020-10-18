@@ -26,7 +26,10 @@ include("api.jl")
 # Use README as the docstring of the module:
 @doc let path = joinpath(dirname(@__DIR__), "README.md")
     include_dependency(path)
-    replace(read(path, String), r"^```julia"m => "```jldoctest README")
+    doc = read(path, String)
+    doc = replace(doc, r"^```julia"m => "```jldoctest README")
+    doc = replace(doc, "(https://juliafolds.github.io/FoldsCUDA.jl/dev/examples/)" => "(@ref examples-toc)")
+    doc
 end FoldsCUDA
 
 end
