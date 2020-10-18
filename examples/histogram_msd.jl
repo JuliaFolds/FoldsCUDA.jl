@@ -78,13 +78,14 @@ aspercentage(hist1)
 # However, you need to explicitly specify to use CUDA by, e.g.,
 # passing `CUDAEx` to `@floop`:
 
-hist2 = histogram_msd((x^2 for x in 1:10^8), CUDAEx())
+executor = has_cuda_gpu() ? CUDAEx() : ThreadedEx()  # fallback to thread
+hist2 = histogram_msd((x^2 for x in 1:10^8), executor)
 
 # Frequency in percentage:
 aspercentage(hist2)
 #-
 
-hist3 = histogram_msd((exp(x) for x in range(1, 35, length=10^8)), CUDAEx())
+hist3 = histogram_msd((exp(x) for x in range(1, 35, length=10^8)), executor)
 
 # Frequency in percentage:
 aspercentage(hist3)
