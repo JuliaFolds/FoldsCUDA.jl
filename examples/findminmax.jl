@@ -1,3 +1,5 @@
+# # `findminmax`
+
 using Transducers
 using CUDA
 using FoldsCUDA
@@ -28,3 +30,15 @@ function findminmax_base(xs)
     xmax, imax = findmax(xs)
     return (; imin, xmin, imax, xmax)
 end
+nothing  # hide
+#-
+
+xs = [700, 900, 500, 200, 700, 700, 900, 300, 600, 400, 900, 600, 900, 800, 600]
+if has_cuda_gpu()
+    xs = CuArray(xs)
+end
+
+result = findminmax(xs)
+#-
+
+@assert result == findminmax_base(xs)

@@ -3,4 +3,6 @@
 *.jl.cov
 .DS_Store
 /Manifest.toml
+/docs/build
+/docs/site
 /test/Manifest.toml
