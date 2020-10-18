@@ -1,3 +1,11 @@
+```@meta
+CurrentModule = FoldsCUDA
+```
+
 # FoldsCUDA.jl
 
-Documentation for FoldsCUDA.jl
+```@docs
+FoldsCUDA
+FoldsCUDA.foldx_cuda
+FoldsCUDA.CUDAEx
+```
