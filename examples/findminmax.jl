@@ -1,3 +1,5 @@
+# `findminmax`
+
 using Transducers
 using CUDA
 using FoldsCUDA
