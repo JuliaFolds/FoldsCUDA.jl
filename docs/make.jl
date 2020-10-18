@@ -11,6 +11,7 @@ PAGES = [
     "index.md",
     "Examples" => [
         "`findminmax`" => "examples/findminmax.md",
+        "Histogram of MSD" => "examples/histogram_msd.md",
     ],
 ]
 
