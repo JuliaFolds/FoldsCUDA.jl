@@ -22,4 +22,4 @@ function monte_carlo_pi(n, m = 10_000, ex = has_cuda_gpu() ? CUDAEx() : Threaded
     return 4 * tot / (n * m)
 end
 
-monte_carlo_pi(2^12)
+πₐₚₚᵣₒₓ = monte_carlo_pi(2^12)
