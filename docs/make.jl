@@ -45,6 +45,7 @@ makedocs(
     modules = [FoldsCUDA],
     pages = PAGES,
     doctest = false,
+    strict = true,
 )
 
 deploydocs(
