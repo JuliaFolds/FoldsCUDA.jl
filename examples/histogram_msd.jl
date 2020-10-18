@@ -33,7 +33,7 @@ end == 5
 end == 2
 #-
 
-# ## Computing histogram of MSD
+# ## MSD of random numbers
 
 using CUDA
 using FLoops
@@ -63,9 +63,29 @@ collect(view(xs, 1:10))  # preview
 # Pass an array of (real) numbers to `histogram_msd` to compute the
 # histogram of MSD:
 
-hist = histogram_msd(xs)
+hist1 = histogram_msd(xs)
 
 # Frequency in percentage:
 
-pairs(round.((collect(hist) ./ length(xs) .* 100); digits = 1))
+aspercentage(h) = pairs(round.((collect(h) ./ length(xs) .* 100); digits = 1))
+aspercentage(hist1)
 #-
+
+# ## MSD of lazily computed numbers
+
+# FoldsCUDA supports running reduction over non-`CuArray` containers
+# such as `UnitRange` and iterator transformation wrapping it.
+# However, you need to explicitly specify to use CUDA by, e.g.,
+# passing `CUDAEx` to `@floop`:
+
+executor = has_cuda_gpu() ? CUDAEx() : ThreadedEx()  # fallback to thread
+hist2 = histogram_msd((x^2 for x in 1:10^8), executor)
+
+# Frequency in percentage:
+aspercentage(hist2)
+#-
+
+hist3 = histogram_msd((exp(x) for x in range(1, 35, length=10^8)), executor)
+
+# Frequency in percentage:
+aspercentage(hist3)

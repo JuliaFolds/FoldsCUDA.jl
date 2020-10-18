@@ -95,7 +95,7 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
     @assert blocks <= kernel_config.blocks
 
     if buf === nothing
-        dest_buf = similar(arrays[1], acctype, blocks + cld(blocks, threads))
+        dest_buf = CuVector{acctype}(undef, blocks + cld(blocks, threads))
         dest = view(dest_buf, 1:blocks)
         buf = view(dest_buf, blocks+1:length(dest_buf))
     else
