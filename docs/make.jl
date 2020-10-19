@@ -12,6 +12,7 @@ PAGES = [
     "Examples" => [
         "`findminmax`" => "examples/findminmax.md",
         "Histogram of MSD" => "examples/histogram_msd.md",
+        "Monte-Carlo π" => "examples/monte_carlo_pi.md",
     ],
 ]
 
