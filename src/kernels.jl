@@ -57,7 +57,7 @@ Base.@propagate_inbounds getvalues(i, a, as...) = (a[i], getvalues(i, as...)...)
 
 function _transduce!(buf, rf::F, init, arrays...) where {F}
     idx = eachindex(arrays...)
-    n = length(idx)
+    n = Int(length(idx))  # e.g., `length(UInt64(0):UInt64(1))` is not an `Int`
 
     wanted_threads = nextpow(2, n)
     compute_threads(max_threads) =
