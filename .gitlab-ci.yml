@@ -2,6 +2,7 @@ include: https://raw.githubusercontent.com/JuliaGPU/gitlab-ci/master/templates/v
 
 .run-test:
   script:
+    - env JULIA_PKG_SERVER="" julia -e 'using Pkg; VERSION >= v"1.5-" && !isdir(joinpath(DEPOT_PATH[1], "registries", "General")) && Pkg.Registry.add("General")'
     - julia -e 'using Pkg; Pkg.add(name="Run", version="0.1")'
     - julia -e 'using Run; Run.prepare_test()'
     - julia -e 'using Run; Run.test()'
