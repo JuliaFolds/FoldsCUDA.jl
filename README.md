@@ -70,3 +70,8 @@ julia> foldx_cuda(TeeRF(min, max), (2x for x in xs))  # iterator comprehension w
 julia> foldx_cuda(TeeRF(min, max), Map(x -> 2x), xs)  # equivalent, using a transducer
 (-1.0f0, 4.0f0)
 ```
+
+### More examples
+
+For more examples, see the
+[examples section in the documentation](https://juliafolds.github.io/FoldsCUDA.jl/dev/examples/).

@@ -39,6 +39,18 @@ let example_dir = joinpath(dirname(@__DIR__), "examples")
     end
 end
 
+
+write(
+    joinpath(@__DIR__, "src", "examples.md"),
+    """
+    # [Examples](@id examples-toc)
+    ```@contents
+    Pages = $(repr(last.(only(p for p in PAGES if p isa Pair && p[1] == "Examples")[2])))
+    Depth = 3
+    ```
+    """,
+)
+
 makedocs(
     # See:
     # https://juliadocs.github.io/Documenter.jl/stable/lib/public/#Documenter.makedocs
