@@ -1,5 +1,9 @@
 # FoldsCUDA
 
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliafolds.github.io/FoldsCUDA.jl/dev)
+[![GitLab CI](https://gitlab.com/JuliaGPU/FoldsCUDA.jl/badges/master/pipeline.svg)](https://gitlab.com/JuliaGPU/FoldsCUDA.jl/-/pipelines)
+[![Run tests w/o GPU](https://github.com/JuliaFolds/FoldsCUDA.jl/workflows/Run%20tests%20w/o%20GPU/badge.svg)](https://github.com/JuliaFolds/FoldsCUDA.jl/actions?query=workflow%3A%22Run+tests+w%2Fo+GPU%22)
+
 FoldsCUDA.jl provides
 [Transducers.jl](https://github.com/JuliaFolds/Transducers.jl)-compatible
 fold (reduce) implemented using
