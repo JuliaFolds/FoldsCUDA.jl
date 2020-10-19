@@ -1,5 +1,7 @@
 # # Estimating π using Monte-Carlo method
-
+#
+# ## Idea
+#
 # Let's compute an approximation of π using the [Monte Carlo
 # method](https://en.wikipedia.org/wiki/Monte_Carlo_method).  The idea
 # is to draw points from the uniform distribution on a unit square and
@@ -22,6 +24,8 @@ p = count(xs.^2 .+ ys.^2 .< 1) / length(xs)
 # > is licensed under
 # > [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/deed.en).
 
+# ## RNG on GPU
+#
 # We try to do this computation on a GPU using FoldsCUDA.jl:
 
 using CUDA
@@ -31,7 +35,7 @@ using FoldsCUDA
 # As of writing, `CUDA.CURAND` does not provide the API usable inside
 # the loop body (i.e., the device API).  However, we can use
 # pure-Julia pseudo number generator quite easily.  In particular, we
-# use [Counter-based random number generator
+# use a [Counter-based random number generator
 # (CBRNG)](https://en.wikipedia.org/wiki/Counter-based_random_number_generator_(CBRNG))
 # provided by [Random123.jl](https://github.com/sunoru/Random123.jl)
 # ([documentation](https://sunoru.github.io/RandomNumbers.jl/stable/man/random123/)).
@@ -49,8 +53,10 @@ set_counter!(rng_b, typemax(UInt64))
 rand(rng_b, UInt64, 2)
 @assert rng_a == rng_b
 
+# ## Using counter-based RNG
+#
 # Let's create a helper function that divides
-# `UInt64(0):typemax(UInt64)` into `n` equally spaced points:
+# `UInt64(0):typemax(UInt64)` into `n` equal intervals:
 
 function counters(n)
     stride = typemax(UInt64) ÷ n
@@ -59,14 +65,16 @@ end
 nothing  # hide
 #-
 
-# This let us use independent RNG for each `ctr`-th iteration:
+# This lets us use "independent" RNG for each `ctr`-th iteration:
 
 function monte_carlo_pi(n, m = 10_000, ex = has_cuda_gpu() ? CUDAEx() : ThreadedEx())
     @floop ex for ctr in counters(n)
         rng = set_counter!(Philox2x(0), ctr)
         nhits = 0
         for _ in 1:m
-            nhits += rand(rng)^2 + rand(rng)^2 < 1
+            x = rand(rng)
+            y = rand(rng)
+            nhits += x^2 + y^2 < 1
         end
         @reduce(tot = 0 + nhits)
     end
