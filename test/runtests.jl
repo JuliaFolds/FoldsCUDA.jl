@@ -3,7 +3,7 @@ module TestFoldsCUDA
 using Test
 
 const TEST_GPU =
-    lowercase(get(ENV, "JULIA_PKGEVAL", "false")) == "true" ||
+    lowercase(get(ENV, "JULIA_PKGEVAL", "false")) != "true" &&
     lowercase(get(ENV, "CUDAFOLDS_JL_TEST_GPU", "true")) == "true"
 
 @testset "$file" for file in sort([
