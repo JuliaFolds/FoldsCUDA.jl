@@ -2,14 +2,24 @@ module FoldsCUDA
 
 export CUDAEx, foldx_cuda, transduce_cuda
 
-import FLoops
 using CUDA
 using Core: Typeof
 using Core.Compiler: return_type
 using GPUArrays: @allowscalar
 using InitialValues: InitialValue, asmonoid
 using Transducers:
-    Map, Reduced, Transducer, combine, complete, next, opcompose, reduced, start, unreduced
+    Executor,
+    Map,
+    Reduced,
+    Transducer,
+    Transducers,
+    combine,
+    complete,
+    next,
+    opcompose,
+    reduced,
+    start,
+    unreduced
 
 # TODO: Don't import internals from Transducers:
 using Transducers:
