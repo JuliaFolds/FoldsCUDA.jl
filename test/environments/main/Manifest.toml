@@ -136,10 +136,10 @@ uuid = "b9860ae5-e623-471e-878b-f6a53c775ea6"
 version = "0.1.0"
 
 [[FoldsCUDA]]
-deps = ["CUDA", "FLoops", "GPUArrays", "InitialValues", "SplittablesBase", "Transducers"]
+deps = ["CUDA", "GPUArrays", "InitialValues", "SplittablesBase", "Transducers"]
 path = "../../.."
 uuid = "6cd66ae4-5932-4b96-926d-e73e578e42cc"
-version = "0.1.1-DEV"
+version = "0.1.2-DEV"
 
 [[Future]]
 deps = ["Random"]
