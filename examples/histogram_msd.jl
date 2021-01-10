@@ -40,7 +40,7 @@ using FLoops
 using FoldsCUDA
 using Setfield
 
-function histogram_msd(xs, ex = xs isa CuArray ? CUDAEx() : ThreadedEx())
+function histogram_msd(xs, ex = nothing)
     zs = ntuple(_ -> 0, 9)  # a tuple of 9 zeros
     @floop ex for x in xs
         d = msd(x)
@@ -78,14 +78,13 @@ aspercentage(hist1)
 # However, you need to explicitly specify to use CUDA by, e.g.,
 # passing `CUDAEx` to `@floop`:
 
-executor = has_cuda_gpu() ? CUDAEx() : ThreadedEx()  # fallback to thread
-hist2 = histogram_msd((x^2 for x in 1:10^8), executor)
+hist2 = histogram_msd(x^2 for x in 1:10^8)
 
 # Frequency in percentage:
 aspercentage(hist2)
 #-
 
-hist3 = histogram_msd((exp(x) for x in range(1, 35, length=10^8)), executor)
+hist3 = histogram_msd(exp(x) for x in range(1, 35, length=10^8))
 
 # Frequency in percentage:
 aspercentage(hist3)
