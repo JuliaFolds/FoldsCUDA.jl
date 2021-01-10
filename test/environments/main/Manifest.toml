@@ -123,11 +123,11 @@ version = "0.1.3"
 
 [[FLoops]]
 deps = ["Compat", "FLoopsBase", "JuliaVariables", "MLStyle", "Setfield", "Transducers"]
-git-tree-sha1 = "4f5835d6d465f65544e4fbfaa4ee1e2dfb1bcbd3"
+git-tree-sha1 = "5a4e80b457e8e5e9e90e0d1a77e4a20524fb6593"
 repo-rev = "release"
 repo-url = "https://github.com/JuliaFolds/FLoops.jl.git"
 uuid = "cc61a311-1640-44b5-9fba-1b764f453329"
-version = "0.1.5"
+version = "0.1.6-DEV"
 
 [[FLoopsBase]]
 deps = ["ContextVariablesX"]
