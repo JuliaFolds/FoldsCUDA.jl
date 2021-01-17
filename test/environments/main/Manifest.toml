@@ -8,9 +8,9 @@ version = "0.5.0"
 
 [[Adapt]]
 deps = ["LinearAlgebra"]
-git-tree-sha1 = "42c42f2221906892ceb765dbcb1a51deeffd86d7"
+git-tree-sha1 = "345a14764e43fe927d6f5c250fe4c8e4664e6ee8"
 uuid = "79e6a3ab-5dfb-504d-930d-738a2a938a0e"
-version = "2.3.0"
+version = "2.4.0"
 
 [[Aqua]]
 deps = ["Pkg", "Test"]
@@ -92,9 +92,9 @@ deps = ["Printf"]
 uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
 
 [[DefineSingletons]]
-git-tree-sha1 = "1a356f194281dff9ef1119faa9125a0d4e210729"
+git-tree-sha1 = "77b4ca280084423b728662fe040e5ff8819347c5"
 uuid = "244e2a9f-e319-4986-a169-4d1fe445cd52"
-version = "0.1.0"
+version = "0.1.1"
 
 [[DelimitedFiles]]
 deps = ["Mmap"]
@@ -134,6 +134,14 @@ deps = ["ContextVariablesX"]
 git-tree-sha1 = "cf3d8b2527be12d204d06aba922b30339a9653dd"
 uuid = "b9860ae5-e623-471e-878b-f6a53c775ea6"
 version = "0.1.0"
+
+[[Folds]]
+deps = ["BangBang", "DefineSingletons", "Distributed", "InitialValues", "Test", "Transducers"]
+git-tree-sha1 = "045bad41e5922697cc80403bb53162574fb7819c"
+repo-rev = "master"
+repo-url = "https://github.com/JuliaFolds/Folds.jl.git"
+uuid = "41a02a25-b8f0-4f67-bc48-60067656b558"
+version = "0.2.0-DEV"
 
 [[FoldsCUDA]]
 deps = ["CUDA", "GPUArrays", "InitialValues", "SplittablesBase", "Transducers"]
