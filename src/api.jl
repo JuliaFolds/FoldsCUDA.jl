@@ -24,3 +24,5 @@ popsimd(; simd = nothing, kwargs...) = kwargs
 
 Transducers.transduce(xf, rf::RF, init, xs, exc::CUDAEx) where {RF} =
     transduce_cuda(xf, rf, init, xs; popsimd(; exc.kwargs...)...)
+
+Transducers.executor_type(::CuArray) = CUDAEx
