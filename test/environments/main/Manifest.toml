@@ -6,6 +6,12 @@ git-tree-sha1 = "051c95d6836228d120f5f4b984dd5aba1624f716"
 uuid = "621f4979-c628-5d54-868e-fcf4e3e8185c"
 version = "0.5.0"
 
+[[Accessors]]
+deps = ["Compat", "CompositionsBase", "ConstructionBase", "Future", "MacroTools", "Requires", "Test"]
+git-tree-sha1 = "6061581e28cf6fbbb6af983022c2589cbc801007"
+uuid = "7d9f7c33-5ae7-4f3b-8dc6-eff91059b697"
+version = "0.1.1"
+
 [[Adapt]]
 deps = ["LinearAlgebra"]
 git-tree-sha1 = "345a14764e43fe927d6f5c250fe4c8e4664e6ee8"
@@ -136,8 +142,8 @@ uuid = "b9860ae5-e623-471e-878b-f6a53c775ea6"
 version = "0.1.0"
 
 [[Folds]]
-deps = ["BangBang", "DefineSingletons", "Distributed", "InitialValues", "Test", "Transducers"]
-git-tree-sha1 = "27554e0c15e92a8a0010b93f6655cedad2afa48d"
+deps = ["Accessors", "BangBang", "DefineSingletons", "Distributed", "InitialValues", "MicroCollections", "Test", "Transducers"]
+git-tree-sha1 = "2846d61e66fe2c4b2a811ae646d373d83be722ad"
 repo-rev = "master"
 repo-url = "https://github.com/JuliaFolds/Folds.jl.git"
 uuid = "41a02a25-b8f0-4f67-bc48-60067656b558"
