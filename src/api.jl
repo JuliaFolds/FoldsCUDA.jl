@@ -7,21 +7,22 @@ Extended fold backed up by CUDA.
 (foldx_cuda, transduce_cuda)
 
 foldx_cuda(op, xs; init = DefaultInit, kwargs...) =
-    unreduced(transduce_cuda(op, init, xs; kwargs...))
+    Transducers.fold(op, xs, CUDAEx(; kwargs...); init = init)
 
-foldx_cuda(op, xf, xs; init = DefaultInit, kwargs...) =
-    unreduced(transduce_cuda(xf, op, init, xs; kwargs...))
+foldx_cuda(op, xf, xs; kwargs...) = foldx_cuda(op, xf(xs); kwargs...)
 
 """
     CUDAEx()
 
 FLoops.jl executor implemented using CUDA.jl.
 """
-struct CUDAEx{K} <: FLoops.Executor
+struct CUDAEx{K} <: Executor
     kwargs::K
 end
 
 popsimd(; simd = nothing, kwargs...) = kwargs
 
-FLoops._fold(rf::RF, init, xs, exc::CUDAEx) where {RF} =
-    foldx_cuda(rf, IdentityTransducer(), xs; popsimd(; exc.kwargs...)..., init = init)
+Transducers.transduce(xf, rf::RF, init, xs, exc::CUDAEx) where {RF} =
+    transduce_cuda(xf, rf, init, xs; popsimd(; exc.kwargs...)...)
+
+Transducers.executor_type(::CuArray) = CUDAEx
