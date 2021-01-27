@@ -143,7 +143,7 @@ version = "0.1.0"
 
 [[Folds]]
 deps = ["Accessors", "BangBang", "DefineSingletons", "Distributed", "InitialValues", "MicroCollections", "Test", "Transducers"]
-git-tree-sha1 = "2846d61e66fe2c4b2a811ae646d373d83be722ad"
+git-tree-sha1 = "01f94f6530ae4a317bef780210491b068d9cbc6c"
 repo-rev = "master"
 repo-url = "https://github.com/JuliaFolds/Folds.jl.git"
 uuid = "41a02a25-b8f0-4f67-bc48-60067656b558"
