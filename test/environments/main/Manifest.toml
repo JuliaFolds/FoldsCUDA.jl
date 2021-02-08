@@ -143,17 +143,17 @@ version = "0.1.0"
 
 [[Folds]]
 deps = ["Accessors", "BangBang", "DefineSingletons", "Distributed", "InitialValues", "MicroCollections", "Test", "Transducers"]
-git-tree-sha1 = "9625ad415387358c61610f32769918604d666cb4"
+git-tree-sha1 = "d2228a6b01341339fc2a862e060714205e36489f"
 repo-rev = "master"
 repo-url = "https://github.com/JuliaFolds/Folds.jl.git"
 uuid = "41a02a25-b8f0-4f67-bc48-60067656b558"
-version = "0.2.0-DEV"
+version = "0.2.0"
 
 [[FoldsCUDA]]
 deps = ["CUDA", "GPUArrays", "InitialValues", "SplittablesBase", "Transducers"]
 path = "../../.."
 uuid = "6cd66ae4-5932-4b96-926d-e73e578e42cc"
-version = "0.1.2-DEV"
+version = "0.1.3-DEV"
 
 [[Future]]
 deps = ["Random"]
