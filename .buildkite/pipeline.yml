@@ -1,0 +1,20 @@
+steps:
+  - label: "Julia v1"
+    plugins:
+      - JuliaCI/julia#v1:
+          version: "1"
+      - JuliaCI/julia-coverage#v1:
+          codecov: true
+    commands:
+      - julia -e 'using Pkg; Pkg.add(name="Run", version="0.1")'
+      - julia -e 'using Run; Run.prepare("test/environments/main")'
+      - julia -e 'using Run; Run.test(project="test/environments/main")'
+    agents:
+      queue: "juliagpu"
+      cuda: "*"
+    timeout_in_minutes: 60
+
+env:
+  JULIA_PKG_SERVER: "" # it often struggles with our large artifacts
+  CUDAFOLDS_JL_TEST_GPU: "true"
+  SECRET_CODECOV_TOKEN: "HDjqcgG6Bozv3kzM0iLF8ShKQMqeFd1m+bd27Ca7E48qTcW57auBllN2XsOOj2e7srd9W8ou4fwGeIte0kpNsH9VVp2ad6VN9BPhLrQN4SdJyJks8N+wrDtAb2ANdk+ln5mdp46jvd7JDwRnUkAn/GkziWT0nxiDS98jJ13cGmhKVBKHHzMCn5Fg/d5pc2lJ2uucD1gwL78e/JlmMrE3XbMbkR1I4o+h3ctLoaAEz+fPPQY2idlE1bJXn+gdfZ2gHj83/hkFH7PvfVC64ytKaNKe40P7W22fkUbZUscxyNTm7TmT82XbPwVXHci3W+D8UeT1I04CIiQiXNy5ZiNCsQ==;U2FsdGVkX1+Bh2Gbiu+XF2NtWwGE8GqH1OBOdAyU96ii73xq1FLMOcXvkY++q38aQchsjaxRW2fW6XWW/CZZAQ=="

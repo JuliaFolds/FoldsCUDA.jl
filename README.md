@@ -1,7 +1,7 @@
 # FoldsCUDA
 
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliafolds.github.io/FoldsCUDA.jl/dev)
-[![GitLab CI](https://gitlab.com/JuliaGPU/FoldsCUDA.jl/badges/master/pipeline.svg)](https://gitlab.com/JuliaGPU/FoldsCUDA.jl/-/pipelines)
+[![Buildkite status](https://badge.buildkite.com/c4196ef2fa588454c146bab0001d0f8de876aa864ab7c5de80.svg?branch=master)](https://buildkite.com/julialang/foldscuda-dot-jl)
 [![Run tests w/o GPU](https://github.com/JuliaFolds/FoldsCUDA.jl/workflows/Run%20tests%20w/o%20GPU/badge.svg)](https://github.com/JuliaFolds/FoldsCUDA.jl/actions?query=workflow%3A%22Run+tests+w%2Fo+GPU%22)
 
 FoldsCUDA.jl provides
