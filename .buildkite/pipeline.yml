@@ -3,9 +3,12 @@ steps:
     plugins:
       - JuliaCI/julia#v1:
           version: "1"
-      - JuliaCI/julia-test#v1:
       - JuliaCI/julia-coverage#v1:
           codecov: true
+    commands:
+      - julia -e 'using Pkg; Pkg.add(name="Run", version="0.1")'
+      - julia -e 'using Run; Run.prepare("test/environments/main")'
+      - julia -e 'using Run; Run.test(project="test/environments/main")'
     agents:
       queue: "juliagpu"
       cuda: "*"
