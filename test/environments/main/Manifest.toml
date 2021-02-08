@@ -6,11 +6,17 @@ git-tree-sha1 = "051c95d6836228d120f5f4b984dd5aba1624f716"
 uuid = "621f4979-c628-5d54-868e-fcf4e3e8185c"
 version = "0.5.0"
 
+[[Accessors]]
+deps = ["Compat", "CompositionsBase", "ConstructionBase", "Future", "MacroTools", "Requires", "Test"]
+git-tree-sha1 = "6061581e28cf6fbbb6af983022c2589cbc801007"
+uuid = "7d9f7c33-5ae7-4f3b-8dc6-eff91059b697"
+version = "0.1.1"
+
 [[Adapt]]
 deps = ["LinearAlgebra"]
-git-tree-sha1 = "42c42f2221906892ceb765dbcb1a51deeffd86d7"
+git-tree-sha1 = "345a14764e43fe927d6f5c250fe4c8e4664e6ee8"
 uuid = "79e6a3ab-5dfb-504d-930d-738a2a938a0e"
-version = "2.3.0"
+version = "2.4.0"
 
 [[Aqua]]
 deps = ["Pkg", "Test"]
@@ -31,9 +37,9 @@ version = "0.1.0"
 
 [[BangBang]]
 deps = ["Compat", "ConstructionBase", "Future", "InitialValues", "LinearAlgebra", "Requires", "Setfield", "Tables", "ZygoteRules"]
-git-tree-sha1 = "f42321255afc37da855b6cd9f2a1fc36c017ceee"
+git-tree-sha1 = "d53b1eaefd48e233545d21f5b764c8ee54df4a09"
 uuid = "198e06fe-97b7-11e9-32a5-e1d131e6ad66"
-version = "0.3.29"
+version = "0.3.30"
 
 [[Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
@@ -92,9 +98,9 @@ deps = ["Printf"]
 uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
 
 [[DefineSingletons]]
-git-tree-sha1 = "1a356f194281dff9ef1119faa9125a0d4e210729"
+git-tree-sha1 = "77b4ca280084423b728662fe040e5ff8819347c5"
 uuid = "244e2a9f-e319-4986-a169-4d1fe445cd52"
-version = "0.1.0"
+version = "0.1.1"
 
 [[DelimitedFiles]]
 deps = ["Mmap"]
@@ -135,11 +141,19 @@ git-tree-sha1 = "cf3d8b2527be12d204d06aba922b30339a9653dd"
 uuid = "b9860ae5-e623-471e-878b-f6a53c775ea6"
 version = "0.1.0"
 
+[[Folds]]
+deps = ["Accessors", "BangBang", "DefineSingletons", "Distributed", "InitialValues", "MicroCollections", "Test", "Transducers"]
+git-tree-sha1 = "d2228a6b01341339fc2a862e060714205e36489f"
+repo-rev = "master"
+repo-url = "https://github.com/JuliaFolds/Folds.jl.git"
+uuid = "41a02a25-b8f0-4f67-bc48-60067656b558"
+version = "0.2.0"
+
 [[FoldsCUDA]]
 deps = ["CUDA", "GPUArrays", "InitialValues", "SplittablesBase", "Transducers"]
 path = "../../.."
 uuid = "6cd66ae4-5932-4b96-926d-e73e578e42cc"
-version = "0.1.2-DEV"
+version = "0.1.3-DEV"
 
 [[Future]]
 deps = ["Random"]
