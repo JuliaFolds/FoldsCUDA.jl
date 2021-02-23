@@ -13,6 +13,8 @@ PAGES = [
         "`findminmax`" => "examples/findminmax.md",
         "Histogram of MSD" => "examples/histogram_msd.md",
         "Monte-Carlo π" => "examples/monte_carlo_pi.md",
+        "In-place mutation with Referenceables.jl" =>
+            "examples/inplace_mutation_with_referenceables.md",
     ],
 ]
 
