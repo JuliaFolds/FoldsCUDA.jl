@@ -6,6 +6,12 @@ git-tree-sha1 = "8ed9de2f1b1a9b1dee48582ad477c6e67b83eb2c"
 uuid = "621f4979-c628-5d54-868e-fcf4e3e8185c"
 version = "1.0.0"
 
+[[Accessors]]
+deps = ["Compat", "CompositionsBase", "ConstructionBase", "Future", "MacroTools", "Requires", "Test"]
+git-tree-sha1 = "6061581e28cf6fbbb6af983022c2589cbc801007"
+uuid = "7d9f7c33-5ae7-4f3b-8dc6-eff91059b697"
+version = "0.1.1"
+
 [[Adapt]]
 deps = ["LinearAlgebra"]
 git-tree-sha1 = "ffcfa2d345aaee0ef3d8346a073d5dd03c983ebe"
@@ -145,6 +151,12 @@ deps = ["ContextVariablesX"]
 git-tree-sha1 = "cf3d8b2527be12d204d06aba922b30339a9653dd"
 uuid = "b9860ae5-e623-471e-878b-f6a53c775ea6"
 version = "0.1.0"
+
+[[Folds]]
+deps = ["Accessors", "BangBang", "DefineSingletons", "Distributed", "InitialValues", "MicroCollections", "Test", "Transducers"]
+git-tree-sha1 = "1d508282913e9872b748088bea4a83726fcfdfed"
+uuid = "41a02a25-b8f0-4f67-bc48-60067656b558"
+version = "0.2.1"
 
 [[FoldsCUDA]]
 deps = ["CUDA", "GPUArrays", "InitialValues", "SplittablesBase", "Transducers"]
