@@ -7,6 +7,42 @@ using Referenceables: referenceable
 
 using Test                                                             #src
 
+# ## Simple mutation
+
+function increment_folds!(xs)
+    Folds.foreach(referenceable(xs)) do x
+        x[] += 1
+    end
+    return xs
+end
+
+if has_cuda_gpu()
+    xs = CuArray(1:5)
+else
+    xs = Array(1:5)
+end
+
+@test begin
+    collect(increment_folds!(xs))
+end == 2:6
+
+# This can also be written with FLoops.jl:
+
+using FLoops
+
+function increment_floops!(xs, ex = nothing)
+    @floop ex for x in referenceable(xs)
+        x[] += 1
+    end
+    return xs
+end
+
+@test begin
+    collect(increment_floops!(xs))
+end == 3:7
+
+# ## Fusing reduction and mutationg
+
 # Computing `sum(f, xs)` and `f.(xs)` in one go:
 
 function mutation_with_folds(f, xs)

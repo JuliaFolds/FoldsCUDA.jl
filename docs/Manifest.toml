@@ -44,6 +44,11 @@ version = "0.3.30"
 [[Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 
+[[Baselet]]
+git-tree-sha1 = "aebf55e6d7795e02ca500a689d326ac979aaf89e"
+uuid = "9718e550-a3fa-408a-8086-8db961cd8217"
+version = "0.1.1"
+
 [[CEnum]]
 git-tree-sha1 = "215a9aa4a1f23fbd05b92769fdd62559488d70e9"
 uuid = "fa961155-64e5-5f13-b03f-caf6b980ea82"
@@ -153,10 +158,12 @@ uuid = "b9860ae5-e623-471e-878b-f6a53c775ea6"
 version = "0.1.0"
 
 [[Folds]]
-deps = ["Accessors", "BangBang", "DefineSingletons", "Distributed", "InitialValues", "MicroCollections", "Test", "Transducers"]
-git-tree-sha1 = "1d508282913e9872b748088bea4a83726fcfdfed"
+deps = ["Accessors", "BangBang", "Baselet", "DefineSingletons", "Distributed", "InitialValues", "MicroCollections", "Referenceables", "Test", "Transducers"]
+git-tree-sha1 = "9ea5bc85cc77002c5c31ceae604bc6434abf1455"
+repo-rev = "foreach"
+repo-url = "https://github.com/JuliaFolds/Folds.jl.git"
 uuid = "41a02a25-b8f0-4f67-bc48-60067656b558"
-version = "0.2.1"
+version = "0.2.2-DEV"
 
 [[FoldsCUDA]]
 deps = ["CUDA", "GPUArrays", "InitialValues", "SplittablesBase", "Transducers"]
@@ -342,11 +349,11 @@ version = "1.0.0"
 
 [[Referenceables]]
 deps = ["Adapt"]
-git-tree-sha1 = "3ba0564a0030b13c85d39723684128d6d678fc17"
-repo-rev = "adapt"
+git-tree-sha1 = "32b9364938eb88824552a44599aeb12414ad0e74"
+repo-rev = "master"
 repo-url = "https://github.com/tkf/Referenceables.jl"
 uuid = "42d2dcc6-99eb-4e98-b66c-637b7d73030e"
-version = "0.1.0"
+version = "0.1.2-DEV"
 
 [[Requires]]
 deps = ["UUIDs"]
