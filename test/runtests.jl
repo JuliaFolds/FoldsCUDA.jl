@@ -6,15 +6,15 @@ const TEST_GPU =
     lowercase(get(ENV, "JULIA_PKGEVAL", "false")) != "true" &&
     lowercase(get(ENV, "CUDAFOLDS_JL_TEST_GPU", "true")) == "true"
 
-if TEST_GPU
-    if VERSION ≥ v"1.6-"
-        try
-            using CUDA
-        catch
-            @info "Failed to import CUDA. Trying again with `@stdlib`..."
-            push!(LOAD_PATH, "@stdlib")
-        end
+if VERSION ≥ v"1.6-"
+    try
+        using CUDA
+    catch
+        @info "Failed to import CUDA. Trying again with `@stdlib`..."
+        push!(LOAD_PATH, "@stdlib")
     end
+end
+if TEST_GPU
     using CUDA
     CUDA.allowscalar(false)
 end
