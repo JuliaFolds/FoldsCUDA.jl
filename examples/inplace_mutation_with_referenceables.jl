@@ -70,7 +70,7 @@ end == 55
 
 @test begin
     collect(ys)
-end == xs .^ 2
+end == collect(xs) .^ 2
 #-
 
 # An equilvalent computaton with FLoops.jl:
