@@ -7,6 +7,7 @@ using Core: Typeof
 using Core.Compiler: return_type
 using GPUArrays: @allowscalar
 using InitialValues: InitialValue, asmonoid
+using UnionArrays: UnionArrays, UnionVector
 using Transducers:
     Executor,
     Map,
@@ -23,6 +24,7 @@ using Transducers:
 
 # TODO: Don't import internals from Transducers:
 using Transducers:
+    AbstractReduction,
     DefaultInit,
     DefaultInitOf,
     EmptyResultError,

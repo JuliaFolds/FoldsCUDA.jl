@@ -28,10 +28,9 @@ function transduce_impl(rf::F, init, arrays...) where {F}
     end
     # @info "ys, = _transduce!(nothing, rf, ...)" ys
     length(ys) == 1 && return @allowscalar ys[1]
-    monoid = asmonoid(always_combine(rf))
-    rf2 = Map(first)'(monoid)  # TODO: reduce wrapping
+    rf2 = AlwaysCombine(rf)
     while true
-        ys, = _transduce!(buf, rf2, InitialValue(monoid), ys)
+        ys, = _transduce!(buf, rf2, CombineInit(), ys)
         # @info "ys, = _transduce!(buf, rf2, ...)" ys
         length(ys) == 1 && return @allowscalar ys[1]
         dest, buf = buf, dest
@@ -39,21 +38,35 @@ function transduce_impl(rf::F, init, arrays...) where {F}
     end
 end
 
+const _TRUE_ = Ref(true)
+
 function fake_transduce(rf, xs, init)
-    acc1 = next(rf, start(rf, init), first(xs))
-    for x in xs
-        acc1 = next(rf, acc1, x)
+    if _TRUE_[]
+        acc1 = next(rf, start(rf, init), first(xs))
+        for x in xs
+            acc1 = next(rf, acc1, x)
+        end
+        return acc1
+    else
+        return _combine(rf, fake_transduce(rf, xs, init), fake_transduce(rf, xs, init))
     end
-    acc2 = acc1
-    for x in xs
-        acc2 = next(rf, acc2, x)
+end
+
+struct DisallowedElementTypeError{T} <: Exception end
+Base.showerror(io::IO, ::DisallowedElementTypeError{T}) where {T} =
+    print(io, "accumulator type must be `isbits` or `isbitsunion`; got: $T")
+
+function allocate_buffer(::Type{T}, n) where {T}
+    if isbitstype(T)
+        return CuVector{T}(undef, n)
+    elseif Base.isbitsunion(T)
+        return UnionVector(undef, CuVector, T, n)
+    else
+        # TODO: Fallback to the mutate-or-widen appraoch? (e.g., run first
+        # iteration on CPU, and then use it as the initial guess of the
+        # accumulator?)
+        throw(DisallowedElementTypeError{T}())
     end
-    ys = [acc1, acc2]
-    acc3 = acc2
-    for y in ys
-        acc3 = _combine(rf, acc3, y)
-    end
-    return acc3
 end
 
 Base.@propagate_inbounds getvalues(i) = ()
@@ -83,7 +96,7 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
     elseif buf === nothing
         # TODO: find a way to compute type for `cufunction` without
         # creating a dummy object.
-        CuVector{acctype}(undef, 0)
+        allocate_buffer(acctype, 0)
     else
         buf
     end
@@ -91,7 +104,13 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
     # global _KARGS = args
     kernel_tt = Tuple{map(x -> Typeof(cudaconvert(x)), args)...}
     kernel = cufunction(transduce_kernel!, kernel_tt)
-    compute_shmem(threads) = 2 * threads * sizeof(acctype)
+    effelsize = if isbitstype(acctype)
+        sizeof(acctype)
+    else
+        sizeof(UnionArrays.buffereltypefor(acctype)) + sizeof(UInt8)
+    end
+    # @show acctype UnionArrays.buffereltypefor(acctype) effelsize
+    compute_shmem(threads) = 2 * threads * effelsize
     kernel_config =
         launch_configuration(kernel.fun; shmem = compute_shmem ∘ compute_threads)
     threads = compute_threads(kernel_config.threads)
@@ -113,13 +132,22 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
     end
 
     if buf === nothing
-        dest_buf = CuVector{acctype}(undef, blocks + cld(blocks, threads))
+        dest_buf = allocate_buffer(acctype, blocks + cld(blocks, threads))
         dest = view(dest_buf, 1:blocks)
         buf = view(dest_buf, blocks+1:length(dest_buf))
     else
         dest = view(buf, 1:blocks)
     end
     # @show threads, blocks, shmem, basesize
+
+    # global INVOKE_KERNEL = function ()
+    #     @cuda(
+    #         threads = threads,
+    #         blocks = blocks,
+    #         shmem = shmem,
+    #         transduce_kernel!(dest, rf, init, basesize, idx, arrays...)
+    #     )
+    # end
 
     # TODO: do I need sync here?
     CUDA.@sync @cuda(
@@ -170,21 +198,34 @@ end
         x1 = @inbounds getvalues(idx[1], arrays...) # random value (not used)
     end
     acc = next(rf, start(rf, init), x1)
-    for i in offset*basesize+2:min((offset + 1) * basesize, n)
-        x = @inbounds getvalues(idx[i], arrays...)
-        acc = next(rf, acc, x)
-    end
-
-    return acc
+    @inline getinput(i) = @inbounds getvalues(idx[i], arrays...)
+    xf = Map(getinput)
+    return Transducers.__foldl__(
+        Transducers.Reduction(xf, rf),
+        acc,
+        offset*basesize+2:min((offset + 1) * basesize, n),
+    )
 end
 
 @inline function combineblock(rf::F, acc, ::Type{T}, basesize, idx, arrays) where {F,T}
+    # if acc isa Int
+    #     CUDA.@cuprintln("threadIdx=%ld blockIdx=%ld acc=%ld %ld", threadIdx().x, blockIdx().x, acc, 0)
+    # end
     n = length(idx)
     offsetb = (blockIdx().x - 1) * blockDim().x
     bound = max(0, n - offsetb * basesize)
 
     # shared mem for a complete reduction
-    shared = @cuDynamicSharedMem(T, (2 * blockDim().x,))
+    if isbitstype(T)
+        shared = @cuDynamicSharedMem(T, (2 * blockDim().x,))
+    else
+        S = UnionArrays.buffereltypefor(T)
+        data = @cuDynamicSharedMem(S, (2 * blockDim().x,))
+        offset = sizeof(S) * 2 * blockDim().x
+        typeids = @cuDynamicSharedMem(UInt8, (2 * blockDim().x,), offset)
+        @assert UInt(pointer(data, length(data) + 1)) == UInt(pointer(typeids))
+        shared = UnionVector(T, data, typeids)
+    end
     @inbounds shared[threadIdx().x] = acc
 
     m = threadIdx().x - 1
@@ -208,12 +249,25 @@ end
     return acc
 end
 
-function always_combine(rf::F) where {F}
-    @inline function op(a, b)
-        _combine(rf, a, b)
-    end
-    return op
+struct CombineInit end
+
+struct AlwaysCombine{I} <: AbstractReduction{I}
+    inner::I
 end
+
+#=
+AlwaysCombine(rf::Transducers.R_{Map}) = AlwaysCombine(Transducers.inner(rf))
+AlwaysCombine(rf::Transducers.BottomRF) = AlwaysCombine(Transducers.inner(rf))
+=#
+
+@inline Transducers.start(::AlwaysCombine, init::CombineInit) = init
+@inline Transducers.next(::AlwaysCombine, ::CombineInit, input) = first(input)
+@inline Transducers.next(rf::F, acc, input) where {F <: AlwaysCombine} =
+    _combine(rf.inner, acc, first(input))
+@inline Transducers.complete(rf::F, result) where {F <: AlwaysCombine} =
+    complete(rf.inner, result)
+@inline Transducers.combine(rf::F, a, b) where {F <: AlwaysCombine} =
+    _combine(rf.inner, a, b)
 
 # Semantically correct but inefficient (eager) handling of `Reduced`.
 @inline _combine(rf, a::Reduced, b::Reduced) = a

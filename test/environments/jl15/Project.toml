@@ -16,6 +16,7 @@ Setfield = "efcf1570-3423-57d1-acb7-fd33fddbac46"
 SplittablesBase = "171d559e-b47b-412a-8079-5efa626c420e"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Transducers = "28d57a85-8fef-5791-bfe6-a80928e7c999"
+UnionArrays = "d6dd79e4-993b-11e9-1366-0de1c9fe1122"
 
 [compat]
 Aqua = "0.5"
