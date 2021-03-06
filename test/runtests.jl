@@ -2,19 +2,22 @@ module TestFoldsCUDA
 
 using Test
 
-if VERSION ≥ v"1.6-"
-    try
-        using CUDA
-    catch
-        @info "Failed to import CUDA. Trying again with `@stdlib`..."
-        push!(LOAD_PATH, "@stdlib")
-    end
-end
-using CUDA
-
 const TEST_GPU =
     lowercase(get(ENV, "JULIA_PKGEVAL", "false")) != "true" &&
     lowercase(get(ENV, "CUDAFOLDS_JL_TEST_GPU", "true")) == "true"
+
+if TEST_GPU
+    if VERSION ≥ v"1.6-"
+        try
+            using CUDA
+        catch
+            @info "Failed to import CUDA. Trying again with `@stdlib`..."
+            push!(LOAD_PATH, "@stdlib")
+        end
+    end
+    using CUDA
+    CUDA.allowscalar(false)
+end
 
 @testset "$file" for file in sort([
     file for file in readdir(@__DIR__) if match(r"^test_.*\.jl$", file) !== nothing
