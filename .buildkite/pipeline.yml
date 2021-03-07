@@ -12,6 +12,9 @@ steps:
     agents:
       queue: "juliagpu"
       cuda: "*"
+    if: |
+      build.message !~ /^\[skip gpu\]/ &&
+      build.message !~ /^\[skip cuda\]/
     timeout_in_minutes: 60
 
   - label: "Julia v1.6"
@@ -27,6 +30,9 @@ steps:
     agents:
       queue: "juliagpu"
       cuda: "*"
+    if: |
+      build.message !~ /^\[skip gpu\]/ &&
+      build.message !~ /^\[skip cuda\]/
     timeout_in_minutes: 60
 
 env:
