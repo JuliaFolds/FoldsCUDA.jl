@@ -165,28 +165,6 @@ function transduce_kernel!(::Nothing, rf::F, init, basesize, idx, arrays...) whe
     return
 end
 
-function transduce_kernel!(
-    dest::AbstractArray{T},
-    rf::F,
-    init,
-    basesize,
-    idx,
-    arrays...,
-) where {F,T}
-    acc = combineblock(
-        rf,
-        basecase(rf, init, idx, arrays, basesize),
-        T,
-        basesize,
-        idx,
-        arrays,
-    )
-    if threadIdx().x == 1
-        @inbounds dest[blockIdx().x] = acc
-    end
-    return
-end
-
 @inline function basecase(rf::F, init, idx, arrays, basesize) where {F}
     n = length(idx)
     offset = threadIdx().x - 1 + (blockIdx().x - 1) * blockDim().x
@@ -207,10 +185,22 @@ end
     )
 end
 
-@inline function combineblock(rf::F, acc, ::Type{T}, basesize, idx, arrays) where {F,T}
-    # if acc isa Int
-    #     CUDA.@cuprintln("threadIdx=%ld blockIdx=%ld acc=%ld %ld", threadIdx().x, blockIdx().x, acc, 0)
-    # end
+function transduce_kernel!(
+    dest::AbstractArray{T},
+    rf::F,
+    init,
+    basesize,
+    idx,
+    arrays...,
+) where {F,T}
+    acc = basecase(rf, init, idx, arrays, basesize)
+
+    # NOTE: Here, `acc` may have a different type for each thread. Since the
+    # following code contain `sync_threads()`, we cannot introduce any dispatch
+    # bounary ("function barrier") here. Otherwise, since dispatch is just a
+    # branch for the GPU, the resulting code tries to synchronize code across
+    # different branches and hence deadlock.
+
     n = length(idx)
     offsetb = (blockIdx().x - 1) * blockDim().x
     bound = max(0, n - offsetb * basesize)
@@ -243,10 +233,10 @@ end
     end
 
     if t == 1
-        acc = @inbounds shared[1]
+        @inbounds dest[blockIdx().x] =  shared[1]
     end
 
-    return acc
+    return
 end
 
 struct CombineInit end

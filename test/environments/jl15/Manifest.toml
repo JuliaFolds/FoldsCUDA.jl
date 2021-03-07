@@ -412,7 +412,7 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
 [[UnionArrays]]
 deps = ["Adapt", "Setfield", "Transducers"]
-git-tree-sha1 = "c5c612414ac72f4a292346258416a35ba86a110f"
+git-tree-sha1 = "4306049f74dab7c843688e9584093bdb97199e43"
 repo-rev = "cuda"
 repo-url = "https://github.com/JuliaFolds/UnionArrays.jl.git"
 uuid = "d6dd79e4-993b-11e9-1366-0de1c9fe1122"
