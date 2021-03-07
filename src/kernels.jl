@@ -21,6 +21,11 @@ end
 
 function transduce_impl(rf::F, init, arrays...) where {F}
     ys, = (dest, buf) = _transduce!(nothing, rf, init, arrays...)
+    if buf === nothing
+        # The accumulator is a singleton. Once we are finished with the
+        # side-effects of the basecase, transduce is done:
+        return ys
+    end
     # @info "ys, = _transduce!(nothing, rf, ...)" ys
     length(ys) == 1 && return @allowscalar ys[1]
     monoid = asmonoid(always_combine(rf))
@@ -73,7 +78,9 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
         eltype(buf)
     end
     # @show acctype
-    buf0 = if buf === nothing
+    buf0 = if Base.issingletontype(acctype)
+        nothing
+    elseif buf === nothing
         # TODO: find a way to compute type for `cufunction` without
         # creating a dummy object.
         CuVector{acctype}(undef, 0)
@@ -94,6 +101,17 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
     blocks = cld(n, basesize * threads)
     @assert blocks <= kernel_config.blocks
 
+    if Base.issingletontype(acctype)
+        # TODO: do I need sync here?
+        CUDA.@sync @cuda(
+            threads = threads,
+            blocks = blocks,
+            shmem = shmem,
+            transduce_kernel!(nothing, rf, init, basesize, idx, arrays...)
+        )
+        return acctype.instance, nothing
+    end
+
     if buf === nothing
         dest_buf = CuVector{acctype}(undef, blocks + cld(blocks, threads))
         dest = view(dest_buf, 1:blocks)
@@ -112,6 +130,11 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
     )
 
     return dest, buf
+end
+
+function transduce_kernel!(::Nothing, rf::F, init, basesize, idx, arrays...) where {F}
+    basecase(rf, init, idx, arrays, basesize)
+    return
 end
 
 function transduce_kernel!(
