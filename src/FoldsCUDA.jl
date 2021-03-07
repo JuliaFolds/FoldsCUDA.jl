@@ -29,8 +29,10 @@ using Transducers:
     DefaultInitOf,
     EmptyResultError,
     IdentityTransducer,
+    Reduction,
     _reducingfunction,
-    extract_transducer
+    extract_transducer,
+    foldl_nocomplete
 
 include("kernels.jl")
 include("api.jl")

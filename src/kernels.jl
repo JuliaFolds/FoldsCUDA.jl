@@ -26,12 +26,12 @@ function transduce_impl(rf::F, init, arrays...) where {F}
         # side-effects of the basecase, transduce is done:
         return ys
     end
-    # @info "ys, = _transduce!(nothing, rf, ...)" ys
+    # @info "ys, = _transduce!(nothing, rf, ...)" summary(ys)
     length(ys) == 1 && return @allowscalar ys[1]
     rf2 = AlwaysCombine(rf)
     while true
         ys, = _transduce!(buf, rf2, CombineInit(), ys)
-        # @info "ys, = _transduce!(buf, rf2, ...)" ys
+        # @info "ys, = _transduce!(buf, rf2, ...)" summary(ys)
         length(ys) == 1 && return @allowscalar ys[1]
         dest, buf = buf, dest
         # reusing buffer; is it useful?
@@ -178,8 +178,8 @@ end
     acc = next(rf, start(rf, init), x1)
     @inline getinput(i) = @inbounds getvalues(idx[i], arrays...)
     xf = Map(getinput)
-    return Transducers.__foldl__(
-        Transducers.Reduction(xf, rf),
+    return foldl_nocomplete(
+        Reduction(xf, rf),
         acc,
         offset*basesize+2:min((offset + 1) * basesize, n),
     )
@@ -252,12 +252,11 @@ AlwaysCombine(rf::Transducers.BottomRF) = AlwaysCombine(Transducers.inner(rf))
 
 @inline Transducers.start(::AlwaysCombine, init::CombineInit) = init
 @inline Transducers.next(::AlwaysCombine, ::CombineInit, input) = first(input)
-@inline Transducers.next(rf::F, acc, input) where {F <: AlwaysCombine} =
+@inline Transducers.next(rf::F, acc, input) where {F<:AlwaysCombine} =
     _combine(rf.inner, acc, first(input))
-@inline Transducers.complete(rf::F, result) where {F <: AlwaysCombine} =
+@inline Transducers.complete(rf::F, result) where {F<:AlwaysCombine} =
     complete(rf.inner, result)
-@inline Transducers.combine(rf::F, a, b) where {F <: AlwaysCombine} =
-    _combine(rf.inner, a, b)
+@inline Transducers.combine(rf::F, a, b) where {F<:AlwaysCombine} = _combine(rf.inner, a, b)
 
 # Semantically correct but inefficient (eager) handling of `Reduced`.
 @inline _combine(rf, a::Reduced, b::Reduced) = a
