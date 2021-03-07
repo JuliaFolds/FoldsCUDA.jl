@@ -166,7 +166,7 @@ uuid = "41a02a25-b8f0-4f67-bc48-60067656b558"
 version = "0.2.2"
 
 [[FoldsCUDA]]
-deps = ["CUDA", "GPUArrays", "InitialValues", "SplittablesBase", "Transducers"]
+deps = ["CUDA", "GPUArrays", "InitialValues", "SplittablesBase", "Transducers", "UnionArrays"]
 path = ".."
 uuid = "6cd66ae4-5932-4b96-926d-e73e578e42cc"
 version = "0.1.4-DEV"
@@ -434,6 +434,14 @@ uuid = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
 
 [[Unicode]]
 uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
+
+[[UnionArrays]]
+deps = ["Adapt", "Setfield", "Transducers"]
+git-tree-sha1 = "c5c612414ac72f4a292346258416a35ba86a110f"
+repo-rev = "cuda"
+repo-url = "https://github.com/JuliaFolds/UnionArrays.jl.git"
+uuid = "d6dd79e4-993b-11e9-1366-0de1c9fe1122"
+version = "0.1.0"
 
 [[ZygoteRules]]
 deps = ["MacroTools"]
