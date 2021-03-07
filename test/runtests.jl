@@ -23,6 +23,9 @@ end
     file for file in readdir(@__DIR__) if match(r"^test_.*\.jl$", file) !== nothing
 ])
     TEST_GPU || continue  # branch inside `for` loop for printing skipped tests
+    if file == "test_type_changing_accumulators.jl"
+        VERSION < v"1.6-" && continue
+    end
     include(file)
 end
 
