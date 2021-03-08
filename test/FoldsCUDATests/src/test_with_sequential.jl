@@ -28,6 +28,6 @@ tests = parse_tests(rawdata, @__MODULE__)
 
 upload(x) = adapt(CuArray, x)
 
-test_with_sequential(tests, [CUDAEx()]; upload = upload)
+test() = test_with_sequential(tests, [CUDAEx()]; upload = upload)
 
 end  # module

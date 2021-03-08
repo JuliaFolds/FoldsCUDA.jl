@@ -8,7 +8,7 @@ using Transducers
 
 missing_if_odd(x) = isodd(x) ? missing : x
 
-@testset "sum" begin
+function test_sum()
     @test Folds.sum(missing_if_odd, 0:2:2^10, CUDAEx()) == sum(0:2:2^10)
     @test Folds.sum(missing_if_odd, 0:2:2^20, CUDAEx()) == sum(0:2:2^20)
     @test Folds.sum(missing_if_odd, 0:2^10, CUDAEx()) === missing
@@ -22,7 +22,7 @@ partition_length_maximum(xs, ex = PreferParallel()) = Transducers.fold(
     init = typemin(Int),
 )
 
-@testset "partition_length_maximum" begin
+function test_partition_length_maximum()
     @testset "2^$e" for e in [5, 10, 15, 20, 25]
         xs = CUDA.rand(Bool, 2^e)
         @test partition_length_maximum(xs) == partition_length_maximum(collect(xs))
