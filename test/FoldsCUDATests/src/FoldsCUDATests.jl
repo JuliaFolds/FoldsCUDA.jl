@@ -1,7 +1,6 @@
 module FoldsCUDATests
 
 using GPUArrays
-using Pkg
 using Test
 
 function include_tests(dir)
@@ -43,13 +42,28 @@ function collect_modules()
     return modules
 end
 
+this_project() = joinpath(dirname(@__DIR__), "Project.toml")
+
+function is_in_path()
+    project = this_project()
+    paths = Base.load_path()
+    project in paths && return true
+    realproject = realpath(project)
+    realproject in paths && return true
+    matches(path) = path == project || path == realproject
+    return any(paths) do path
+        matches(path) || matches(realpath(path))
+    end
+end
+
 function with_project(f)
-    oldproject = Base.active_project()
+    is_in_path() && return f()
+    load_path = copy(LOAD_PATH)
+    push!(LOAD_PATH, this_project())
     try
-        Pkg.activate(joinpath(@__DIR__, ".."))
         f()
     finally
-        Pkg.activate(oldproject)
+        append!(empty!(LOAD_PATH), load_path)
     end
 end
 
