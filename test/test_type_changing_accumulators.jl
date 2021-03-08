@@ -23,13 +23,9 @@ partition_length_maximum(xs, ex = PreferParallel()) = Transducers.fold(
 )
 
 @testset "partition_length_maximum" begin
-    @testset "2^$e" for e in [10, 15]
+    @testset "2^$e" for e in [5, 10, 15, 20, 25]
         xs = CUDA.rand(Bool, 2^e)
         @test partition_length_maximum(xs) == partition_length_maximum(collect(xs))
-    end
-    @testset "2^$e" for e in [20, 25]
-        xs = CUDA.rand(Bool, 2^e)
-        @test_broken partition_length_maximum(xs) == partition_length_maximum(collect(xs))
     end
 end
 

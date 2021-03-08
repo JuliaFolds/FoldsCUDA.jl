@@ -26,12 +26,14 @@ function transduce_impl(rf::F, init, arrays...) where {F}
         # side-effects of the basecase, transduce is done:
         return ys
     end
-    # @info "ys, = _transduce!(nothing, rf, ...)" summary(ys)
+    # @info "ys, = _transduce!(nothing, rf, ...)" Text(summary(ys))
+    # @info "ys, = _transduce!(nothing, rf, ...)" collect(ys)
     length(ys) == 1 && return @allowscalar ys[1]
     rf2 = AlwaysCombine(rf)
     while true
         ys, = _transduce!(buf, rf2, CombineInit(), ys)
-        # @info "ys, = _transduce!(buf, rf2, ...)" summary(ys)
+        # @info "ys, = _transduce!(buf, rf2, ...)" Text(summary(ys))
+        # @info "ys, = _transduce!(buf, rf2, ...)" collect(ys)
         length(ys) == 1 && return @allowscalar ys[1]
         dest, buf = buf, dest
         # reusing buffer; is it useful?
@@ -201,10 +203,6 @@ function transduce_kernel!(
     # branch for the GPU, the resulting code tries to synchronize code across
     # different branches and hence deadlock.
 
-    n = length(idx)
-    offsetb = (blockIdx().x - 1) * blockDim().x
-    bound = max(0, n - offsetb * basesize)
-
     # shared mem for a complete reduction
     if isbitstype(T)
         shared = @cuDynamicSharedMem(T, (2 * blockDim().x,))
@@ -217,6 +215,15 @@ function transduce_kernel!(
         shared = UnionVector(T, data, typeids)
     end
     @inbounds shared[threadIdx().x] = acc
+
+    # `iseven(m)` in the `while` loop below enforces that indexing on `shared`
+    # is in bounds. But, for the last block we need to make sure to combine
+    # accumulators only within the valid thread indices.
+    bound = let n = length(idx),
+        nbasecases = cld(n, basesize),
+        offsetb = (blockIdx().x - 1) * blockDim().x
+        max(0, nbasecases - offsetb)
+    end
 
     m = threadIdx().x - 1
     t = threadIdx().x
