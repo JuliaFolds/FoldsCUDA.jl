@@ -4,8 +4,6 @@ using FoldsCUDA
 using Documenter: doctest
 using Test
 
-@testset "doctest" begin
-    doctest(FoldsCUDA, manual = false)
-end
+test_doctest() = doctest(FoldsCUDA, manual = false)
 
 end  # module
