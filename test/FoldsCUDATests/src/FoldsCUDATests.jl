@@ -98,4 +98,13 @@ function runtests_impl(modules)
     end
 end
 
+""" A list of tests to be run from UnionArrays.jl """
+const UNIONARRAYS_TESTS = [TestTypeChangingAccumulators]
+
+function runtests_unionarrays()
+    with_project() do
+        runtests_impl(UNIONARRAYS_TESTS)
+    end
+end
+
 end # module
