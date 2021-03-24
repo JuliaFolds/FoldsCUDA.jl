@@ -3,19 +3,19 @@ module FoldsCUDATests
 using GPUArrays
 using Test
 
-function include_tests(dir)
+function include_tests(m = @__MODULE__, dir = @__DIR__)
     for file in readdir(dir)
         if match(r"^test_.*\.jl$", file) !== nothing
-            include(joinpath(dir, file))
+            Base.include(m, joinpath(dir, file))
         end
     end
 end
 
-include_tests(@__DIR__)
+include_tests()
 
 module Generic
 using ..FoldsCUDATests: include_tests
-include_tests(joinpath(@__DIR__, "generic"))
+include_tests(@__MODULE__, joinpath(@__DIR__, "generic"))
 end
 
 should_test_gpu() =
