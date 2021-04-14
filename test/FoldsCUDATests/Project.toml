@@ -1,14 +1,22 @@
+name = "FoldsCUDATests"
+uuid = "d11caea5-3c98-4cd5-8a56-9589fe6662ee"
+authors = ["Takafumi Arakaki <aka.tkf@gmail.com> and contributors"]
+version = "0.1.0"
+
 [deps]
+Adapt = "79e6a3ab-5dfb-504d-930d-738a2a938a0e"
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 FLoops = "cc61a311-1640-44b5-9fba-1b764f453329"
+Folds = "41a02a25-b8f0-4f67-bc48-60067656b558"
 FoldsCUDA = "6cd66ae4-5932-4b96-926d-e73e578e42cc"
 GPUArrays = "0c68f7d7-f131-5f86-a1c3-88cf8149b2d7"
 InitialValues = "22cec73e-a1b8-11e9-2c92-598750a2cf9c"
 LiterateTest = "d77d25b0-90d3-4a16-b10a-412a9d48f625"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Random123 = "74087812-796a-5b5d-8853-05524746bad3"
+Referenceables = "42d2dcc6-99eb-4e98-b66c-637b7d73030e"
 Setfield = "efcf1570-3423-57d1-acb7-fd33fddbac46"
 SplittablesBase = "171d559e-b47b-412a-8079-5efa626c420e"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
