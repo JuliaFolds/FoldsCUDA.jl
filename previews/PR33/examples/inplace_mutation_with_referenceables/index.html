@@ -15,7 +15,7 @@ else
     xs = Array(1:5)
 end
 
-collect(increment_folds!(xs))</code></pre><pre class="documenter-example-output">5-element Array{Int64,1}:
+collect(increment_folds!(xs))</code></pre><pre class="documenter-example-output">5-element Vector{Int64}:
  2
  3
  4
@@ -29,7 +29,7 @@ function increment_floops!(xs, ex = nothing)
     return xs
 end
 
-collect(increment_floops!(xs))</code></pre><pre class="documenter-example-output">5-element Array{Int64,1}:
+collect(increment_floops!(xs))</code></pre><pre class="documenter-example-output">5-element Vector{Int64}:
  3
  4
  5
@@ -48,7 +48,7 @@ else
 end
 
 s, ys = mutation_with_folds(x -&gt; x^2, xs)
-s</code></pre><pre class="documenter-example-output">55</pre><pre><code class="language-julia">collect(ys)</code></pre><pre class="documenter-example-output">5-element Array{Int64,1}:
+s</code></pre><pre class="documenter-example-output">55</pre><pre><code class="language-julia">collect(ys)</code></pre><pre class="documenter-example-output">5-element Vector{Int64}:
   1
   4
   9
@@ -63,4 +63,4 @@ function mutation_with_floop(f, xs)
         @reduce(s = z + y)
     end
     return s, ys
-end</code></pre><pre><code class="language-julia">@assert mutation_with_folds(x -&gt; x^2, xs) == (s, ys)</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../monte_carlo_pi/">« Monte-Carlo π</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Wednesday 14 April 2021 03:22">Wednesday 14 April 2021</span>. Using Julia version 1.5.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+end</code></pre><pre><code class="language-julia">@assert mutation_with_folds(x -&gt; x^2, xs) == (s, ys)</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../monte_carlo_pi/">« Monte-Carlo π</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Wednesday 14 April 2021 04:55">Wednesday 14 April 2021</span>. Using Julia version 1.6.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
