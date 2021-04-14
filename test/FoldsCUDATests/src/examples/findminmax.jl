@@ -1,8 +1,6 @@
-module TestFindminmax
-
 using Test
 using Random
-include("../examples/findminmax.jl")
+include("../../../../examples/findminmax.jl")
 
 @testset for seed in 1:100
     CUDA.seed!(seed)
@@ -26,5 +24,3 @@ end
         @test findminmax(xs) == findminmax(xs_cpu) == findminmax_base(xs_cpu)
     end
 end
-
-end  # module

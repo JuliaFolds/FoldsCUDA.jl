@@ -29,6 +29,12 @@ git-tree-sha1 = "dedbbb2ddb876f899585c4ec4433265e3017215a"
 uuid = "dce04be8-c92d-5529-be00-80e4d2c0e197"
 version = "2.1.0"
 
+[[Artifacts]]
+deps = ["Pkg"]
+git-tree-sha1 = "c30985d8821e0cd73870b17b0ed0ce6dc44cb744"
+uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
+version = "1.3.0"
+
 [[BFloat16s]]
 deps = ["LinearAlgebra", "Test"]
 git-tree-sha1 = "4af69e205efc343068dc8722b8dfec1ade89254a"
@@ -55,16 +61,28 @@ uuid = "fa961155-64e5-5f13-b03f-caf6b980ea82"
 version = "0.4.1"
 
 [[CUDA]]
-deps = ["AbstractFFTs", "Adapt", "BFloat16s", "CEnum", "DataStructures", "ExprTools", "GPUArrays", "GPUCompiler", "LLVM", "Libdl", "LinearAlgebra", "Logging", "MacroTools", "NNlib", "Pkg", "Printf", "Random", "Reexport", "Requires", "SparseArrays", "Statistics", "TimerOutputs"]
-git-tree-sha1 = "54dad2b458b235bc295c6e2f0744b0c15a594941"
+deps = ["AbstractFFTs", "Adapt", "BFloat16s", "CEnum", "CompilerSupportLibraries_jll", "DataStructures", "ExprTools", "GPUArrays", "GPUCompiler", "LLVM", "Libdl", "LinearAlgebra", "Logging", "MacroTools", "NNlib", "Pkg", "Printf", "Random", "Reexport", "Requires", "SparseArrays", "Statistics", "TimerOutputs"]
+git-tree-sha1 = "6eadca78b29780d94d34d4e7d89bb4eb45bce240"
 uuid = "052768ef-5323-5732-b1bb-66c8b64840ba"
-version = "2.1.0"
+version = "2.4.2"
+
+[[ChainRulesCore]]
+deps = ["Compat", "LinearAlgebra", "SparseArrays"]
+git-tree-sha1 = "de4f08843c332d355852721adb1592bce7924da3"
+uuid = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
+version = "0.9.29"
 
 [[Compat]]
 deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "SHA", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Statistics", "Test", "UUIDs", "Unicode"]
 git-tree-sha1 = "a706ff10f1cd8dab94f59fd09c0e657db8e77ff0"
 uuid = "34da2185-b29b-5c13-b0c7-acf172513d20"
 version = "3.23.0"
+
+[[CompilerSupportLibraries_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
+git-tree-sha1 = "8e695f735fca77e9708e795eda62afdb869cbb70"
+uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
+version = "0.3.4+0"
 
 [[CompositionsBase]]
 git-tree-sha1 = "f3955eb38944e5dd0fabf8ca1e267d94941d34a5"
@@ -134,11 +152,11 @@ version = "0.1.3"
 
 [[FLoops]]
 deps = ["Compat", "FLoopsBase", "JuliaVariables", "MLStyle", "Setfield", "Transducers"]
-git-tree-sha1 = "e38ee2e0fdb95053d26593f92ffaa8353b9ff53f"
+git-tree-sha1 = "e48beffe4ab65f2f4ddc8d3e9fd2e9e3912fbba5"
 repo-rev = "master"
 repo-url = "https://github.com/JuliaFolds/FLoops.jl.git"
 uuid = "cc61a311-1640-44b5-9fba-1b764f453329"
-version = "0.1.6"
+version = "0.1.9-DEV"
 
 [[FLoopsBase]]
 deps = ["ContextVariablesX"]
@@ -155,10 +173,16 @@ uuid = "41a02a25-b8f0-4f67-bc48-60067656b558"
 version = "0.2.2"
 
 [[FoldsCUDA]]
-deps = ["CUDA", "GPUArrays", "InitialValues", "SplittablesBase", "Transducers"]
+deps = ["CUDA", "GPUArrays", "InitialValues", "SplittablesBase", "Transducers", "UnionArrays"]
 path = "../../.."
 uuid = "6cd66ae4-5932-4b96-926d-e73e578e42cc"
-version = "0.1.4-DEV"
+version = "0.1.5-DEV"
+
+[[FoldsCUDATests]]
+deps = ["Adapt", "Aqua", "CUDA", "Documenter", "FLoops", "Folds", "FoldsCUDA", "GPUArrays", "InitialValues", "LiterateTest", "Random", "Random123", "Referenceables", "Setfield", "SplittablesBase", "Test", "Transducers"]
+path = "../../FoldsCUDATests"
+uuid = "d11caea5-3c98-4cd5-8a56-9589fe6662ee"
+version = "0.1.0"
 
 [[Future]]
 deps = ["Random"]
@@ -195,6 +219,11 @@ uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 git-tree-sha1 = "a3f24677c21f5bbe9d2a714f95dcd58337fb2856"
 uuid = "82899510-4779-5014-852e-03e436cf321d"
 version = "1.0.0"
+
+[[JLLWrappers]]
+git-tree-sha1 = "a431f5f2ca3f4feef3bd7a5e94b8b8d4f2f647a0"
+uuid = "692b3bcd-3c85-4b1f-b108-f13ce0eb3210"
+version = "1.2.0"
 
 [[JSON]]
 deps = ["Dates", "Mmap", "Parsers", "Unicode"]
@@ -259,10 +288,10 @@ version = "0.1.0"
 uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[NNlib]]
-deps = ["Libdl", "LinearAlgebra", "Pkg", "Requires", "Statistics"]
-git-tree-sha1 = "a8180fd1445e31c0b1add98dae8da694ac2c23fd"
+deps = ["ChainRulesCore", "Compat", "LinearAlgebra", "Pkg", "Requires", "Statistics"]
+git-tree-sha1 = "ab1d43fead2ecb9aa5ae460d3d547c2cf8d89461"
 uuid = "872c559c-99b0-510c-b3b7-b6c96a88d5cd"
-version = "0.7.6"
+version = "0.7.17"
 
 [[NameResolution]]
 deps = ["PrettyPrint"]
@@ -409,6 +438,14 @@ uuid = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
 
 [[Unicode]]
 uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
+
+[[UnionArrays]]
+deps = ["Adapt", "Setfield", "Transducers"]
+git-tree-sha1 = "089becb11f1716bff771452f97f6e9106e943b18"
+repo-rev = "master"
+repo-url = "https://github.com/JuliaFolds/UnionArrays.jl.git"
+uuid = "d6dd79e4-993b-11e9-1366-0de1c9fe1122"
+version = "0.1.0"
 
 [[ZygoteRules]]
 deps = ["MacroTools"]

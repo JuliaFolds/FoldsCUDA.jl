@@ -16,8 +16,6 @@ jobs:
       - uses: julia-actions/setup-julia@latest
         with:
           version: 1.5
-      - name: Set up ~/.julia/registries/General as a Git repository (using julia-buildpkg)
-        uses: julia-actions/julia-buildpkg@v1
       - name: Install Run.jl
         run: julia -e 'using Pkg; pkg"add Run@0.1"'
       - name: Install dependencies

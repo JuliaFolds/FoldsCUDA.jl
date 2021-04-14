@@ -1,4 +1,4 @@
 module TestInplaceMutationWithReferenceables
 using LiterateTest.AssertAsTest: @assert
-include("../../examples/inplace_mutation_with_referenceables.jl")
+test() = include(joinpath(@__DIR__, "../examples/inplace_mutation_with_referenceables.jl"))
 end  # module
