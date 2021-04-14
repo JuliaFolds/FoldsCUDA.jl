@@ -170,10 +170,10 @@ uuid = "41a02a25-b8f0-4f67-bc48-60067656b558"
 version = "0.2.2"
 
 [[FoldsCUDA]]
-deps = ["CUDA", "GPUArrays", "InitialValues", "SplittablesBase", "Transducers"]
-git-tree-sha1 = "a6ee9c8b988bc1286f655a14493bb826c72098f3"
+deps = ["CUDA", "GPUArrays", "InitialValues", "SplittablesBase", "Transducers", "UnionArrays"]
+path = "../../.."
 uuid = "6cd66ae4-5932-4b96-926d-e73e578e42cc"
-version = "0.1.4"
+version = "0.1.5-DEV"
 
 [[FoldsCUDATests]]
 deps = ["Adapt", "Aqua", "CUDA", "Documenter", "FLoops", "Folds", "FoldsCUDA", "GPUArrays", "InitialValues", "LiterateTest", "Random", "Random123", "Referenceables", "Setfield", "SplittablesBase", "Test", "Transducers"]
@@ -430,6 +430,12 @@ uuid = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
 
 [[Unicode]]
 uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
+
+[[UnionArrays]]
+deps = ["Adapt", "Setfield", "Transducers"]
+git-tree-sha1 = "089becb11f1716bff771452f97f6e9106e943b18"
+uuid = "d6dd79e4-993b-11e9-1366-0de1c9fe1122"
+version = "0.1.0"
 
 [[ZygoteRules]]
 deps = ["MacroTools"]
