@@ -1,3 +1,8 @@
 [deps]
+FLoops = "cc61a311-1640-44b5-9fba-1b764f453329"
+Folds = "41a02a25-b8f0-4f67-bc48-60067656b558"
 FoldsCUDA = "6cd66ae4-5932-4b96-926d-e73e578e42cc"
 FoldsCUDATests = "d11caea5-3c98-4cd5-8a56-9589fe6662ee"
+Referenceables = "42d2dcc6-99eb-4e98-b66c-637b7d73030e"
+Transducers = "28d57a85-8fef-5791-bfe6-a80928e7c999"
+UnionArrays = "d6dd79e4-993b-11e9-1366-0de1c9fe1122"
