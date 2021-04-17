@@ -10,7 +10,7 @@ jobs:
   vanilla-test:
     runs-on: ubuntu-latest
     env:
-      CUDAFOLDS_JL_TEST_GPU: "false"
+      JULIA_PKGEVAL: "true"
     steps:
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
