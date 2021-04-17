@@ -1,7 +1,9 @@
 module TestTypeChangingAccumulators
 
+using Adapt
 using CUDA
 using Folds
+using Folds.Testing: Testing, parse_tests
 using FoldsCUDA
 using Test
 using Transducers
@@ -28,5 +30,20 @@ function test_partition_length_maximum()
         @test partition_length_maximum(xs) == partition_length_maximum(collect(xs))
     end
 end
+
+
+rawdata = """
+reduce(TeeRF(min, max), (2x for x in 1:10 if isodd(x)))
+"""
+
+#=
+prod(y for x in 1:11 if isodd(x) for y in 1:x:x^2)
+=#
+
+testdata = parse_tests(rawdata, @__MODULE__)
+
+upload(x) = adapt(CuArray, x)
+
+test_with_sequential() = Testing.test_with_sequential(testdata, [CUDAEx()]; upload = upload)
 
 end  # module
