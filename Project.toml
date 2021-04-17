@@ -1,7 +1,7 @@
 name = "FoldsCUDA"
 uuid = "6cd66ae4-5932-4b96-926d-e73e578e42cc"
 authors = ["Takafumi Arakaki <aka.tkf@gmail.com> and contributors"]
-version = "0.1.5"
+version = "0.1.6-DEV"
 
 [deps]
 CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
