@@ -167,11 +167,9 @@ version = "0.1.0"
 
 [[Folds]]
 deps = ["Accessors", "BangBang", "Baselet", "DefineSingletons", "Distributed", "InitialValues", "MicroCollections", "Referenceables", "Test", "Transducers"]
-git-tree-sha1 = "186678c4afea1e35bc861451eb8f4efbfa0fce07"
-repo-rev = "teerf"
-repo-url = "https://github.com/JuliaFolds/Folds.jl.git"
+git-tree-sha1 = "06b91e95befe35cbdeba35eba436e93db5276d8e"
 uuid = "41a02a25-b8f0-4f67-bc48-60067656b558"
-version = "0.2.3-DEV"
+version = "0.2.3"
 
 [[FoldsCUDA]]
 deps = ["CUDA", "GPUArrays", "InitialValues", "Transducers", "UnionArrays"]
@@ -490,11 +488,9 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
 [[UnionArrays]]
 deps = ["Adapt", "Setfield", "Transducers"]
-git-tree-sha1 = "e2f5e9f55dbd1ddb0cd30cd3fdbded4063b4ac78"
-repo-rev = "zeropad-val"
-repo-url = "https://github.com/JuliaFolds/UnionArrays.jl.git"
+git-tree-sha1 = "fa1cd8acd42561bffdcd5264c94fb2d8bffc52b3"
 uuid = "d6dd79e4-993b-11e9-1366-0de1c9fe1122"
-version = "0.1.0"
+version = "0.1.1"
 
 [[Zlib_jll]]
 deps = ["Libdl"]
