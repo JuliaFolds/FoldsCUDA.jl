@@ -14,7 +14,20 @@ foldx_cuda(op, xf, xs; kwargs...) = foldx_cuda(op, xf(xs); kwargs...)
 """
     CUDAEx()
 
-FLoops.jl executor implemented using CUDA.jl.
+A fold executor implemented using CUDA.jl.
+
+For more information about executor, see
+[Transducers.jl's glossary section](https://juliafolds.github.io/Transducers.jl/dev/explanation/glossary/#glossary-executor)
+and
+[FLoops.jl's API section](https://juliafolds.github.io/FLoops.jl/dev/reference/api/#executor).
+
+# Examples
+```jldoctest
+julia> using FoldsCUDA, Folds
+
+julia> Folds.sum(1:10, CUDAEx())
+55
+```
 """
 struct CUDAEx{K} <: Executor
     kwargs::K
