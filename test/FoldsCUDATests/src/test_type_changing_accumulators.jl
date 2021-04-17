@@ -33,9 +33,12 @@ end
 
 
 rawdata = """
-prod(y for x in 1:11 if isodd(x) for y in 1:x:x^2)
 reduce(TeeRF(min, max), (2x for x in 1:10 if isodd(x)))
 """
+
+#=
+prod(y for x in 1:11 if isodd(x) for y in 1:x:x^2)
+=#
 
 testdata = parse_tests(rawdata, @__MODULE__)
 
