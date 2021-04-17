@@ -154,10 +154,12 @@ uuid = "e2ba6199-217a-4e67-a87a-7c52f15ade04"
 version = "0.1.3"
 
 [[FLoops]]
-deps = ["Compat", "FLoopsBase", "JuliaVariables", "MLStyle", "Setfield", "Transducers"]
-git-tree-sha1 = "e4c600bf3278e402ae94dc9651d1c40751eede5f"
+deps = ["Compat", "FLoopsBase", "JuliaVariables", "MLStyle", "Serialization", "Setfield", "Transducers"]
+git-tree-sha1 = "34588a35f6c5bfa457663dcae6945238ca4ae3b0"
+repo-rev = "master"
+repo-url = "https://github.com/JuliaFolds/FLoops.jl.git"
 uuid = "cc61a311-1640-44b5-9fba-1b764f453329"
-version = "0.1.8"
+version = "0.1.10-DEV"
 
 [[FLoopsBase]]
 deps = ["ContextVariablesX"]
@@ -167,9 +169,11 @@ version = "0.1.0"
 
 [[Folds]]
 deps = ["Accessors", "BangBang", "Baselet", "DefineSingletons", "Distributed", "InitialValues", "MicroCollections", "Referenceables", "Test", "Transducers"]
-git-tree-sha1 = "6e38bb8e071fef3b29e9ab212c973d0fe5452b62"
+git-tree-sha1 = "c22b41e9b3519af2b913a484d6541d6e46fb756e"
+repo-rev = "master"
+repo-url = "https://github.com/JuliaFolds/Folds.jl.git"
 uuid = "41a02a25-b8f0-4f67-bc48-60067656b558"
-version = "0.2.2"
+version = "0.2.3-DEV"
 
 [[FoldsCUDA]]
 deps = ["CUDA", "GPUArrays", "InitialValues", "Transducers", "UnionArrays"]
@@ -381,9 +385,11 @@ version = "1.0.0"
 
 [[Referenceables]]
 deps = ["Adapt"]
-git-tree-sha1 = "e681d3bfa49cd46c3c161505caddf20f0e62aaa9"
+git-tree-sha1 = "4253d5bcf74406566f4b0178492d650b1db321ef"
+repo-rev = "master"
+repo-url = "https://github.com/tkf/Referenceables.jl.git"
 uuid = "42d2dcc6-99eb-4e98-b66c-637b7d73030e"
-version = "0.1.2"
+version = "0.1.3-DEV"
 
 [[Requires]]
 deps = ["UUIDs"]
@@ -468,9 +474,11 @@ version = "0.5.8"
 
 [[Transducers]]
 deps = ["ArgCheck", "BangBang", "CompositionsBase", "DefineSingletons", "Distributed", "InitialValues", "Logging", "Markdown", "MicroCollections", "Requires", "Setfield", "SplittablesBase", "Tables"]
-git-tree-sha1 = "721dc0b917a43e6d191f07a6ea095ced164f08ce"
+git-tree-sha1 = "0c6c47a489f053fe231e124c2aec53fd145dc615"
+repo-rev = "master"
+repo-url = "https://github.com/JuliaFolds/Transducers.jl.git"
 uuid = "28d57a85-8fef-5791-bfe6-a80928e7c999"
-version = "0.4.62"
+version = "0.4.63-DEV"
 
 [[UUIDs]]
 deps = ["Random", "SHA"]
@@ -481,7 +489,9 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
 [[UnionArrays]]
 deps = ["Adapt", "Setfield", "Transducers"]
-git-tree-sha1 = "089becb11f1716bff771452f97f6e9106e943b18"
+git-tree-sha1 = "2fe91ca48418e0bc47a5094cbe04bb0e6472fcdd"
+repo-rev = "master"
+repo-url = "https://github.com/JuliaFolds/UnionArrays.jl.git"
 uuid = "d6dd79e4-993b-11e9-1366-0de1c9fe1122"
 version = "0.1.0"
 
