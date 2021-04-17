@@ -152,10 +152,10 @@ uuid = "e2ba6199-217a-4e67-a87a-7c52f15ade04"
 version = "0.1.3"
 
 [[FLoops]]
-deps = ["Compat", "FLoopsBase", "JuliaVariables", "MLStyle", "Setfield", "Transducers"]
-git-tree-sha1 = "2513a56cdabcfd69b67e21fc40b8b928d1a73cf8"
+deps = ["Compat", "FLoopsBase", "JuliaVariables", "MLStyle", "Serialization", "Setfield", "Transducers"]
+git-tree-sha1 = "37d092665146d18e4b980d8a88b4a7d80572c5c3"
 uuid = "cc61a311-1640-44b5-9fba-1b764f453329"
-version = "0.1.9"
+version = "0.1.10"
 
 [[FLoopsBase]]
 deps = ["ContextVariablesX"]
