@@ -175,7 +175,7 @@ version = "0.2.2"
 deps = ["CUDA", "GPUArrays", "InitialValues", "Transducers", "UnionArrays"]
 path = "../../.."
 uuid = "6cd66ae4-5932-4b96-926d-e73e578e42cc"
-version = "0.1.5-DEV"
+version = "0.1.6-DEV"
 
 [[FoldsCUDATests]]
 deps = ["Adapt", "Aqua", "CUDA", "Documenter", "FLoops", "Folds", "FoldsCUDA", "GPUArrays", "InitialValues", "LiterateTest", "Random", "Random123", "Referenceables", "Setfield", "SplittablesBase", "Test", "Transducers"]
