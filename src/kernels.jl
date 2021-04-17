@@ -1,7 +1,7 @@
-transduce_cuda(xf::Transducer, op, init, xs; kwargs...) =
-    transduce_cuda(xf'(op), init, xs; kwargs...)
+_transduce_cuda(xf::Transducer, op, init, xs; kwargs...) =
+    _transduce_cuda(xf'(op), init, xs; kwargs...)
 
-function transduce_cuda(op, init, xs;)
+function _transduce_cuda(op, init, xs;)
     xf0, coll = extract_transducer(xs)
     if coll isa Iterators.Zip
         arrays = coll.is

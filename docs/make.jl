@@ -16,6 +16,7 @@ PAGES = [
         "In-place mutation with Referenceables.jl" =>
             "examples/inplace_mutation_with_referenceables.md",
     ],
+    hide("deprecated.md"),
 ]
 
 let example_dir = joinpath(dirname(@__DIR__), "examples")
