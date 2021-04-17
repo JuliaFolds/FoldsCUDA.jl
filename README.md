@@ -71,7 +71,7 @@ julia> Folds.reduce(TeeRF(min, max), xs, CUDAEx())
 julia> Folds.reduce(TeeRF(min, max), (2x for x in xs), CUDAEx())  # iterator comprehension works
 (-1.0f0, 4.0f0)
 
-julia> Folds.reduce(TeeRF(min, max), Map(x -> 2x), xs, CUDAEx())  # equivalent, using a transducer
+julia> Folds.reduce(TeeRF(min, max), Map(x -> 2x)(xs), CUDAEx())  # equivalent, using a transducer
 (-1.0f0, 4.0f0)
 ```
 
