@@ -20,6 +20,7 @@ using Transducers:
     opcompose,
     reduced,
     start,
+    transduce,
     unreduced
 
 # TODO: Don't import internals from Transducers:

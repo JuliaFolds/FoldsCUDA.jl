@@ -1,15 +1,22 @@
 """
     foldx_cuda(op[, xf], xs; init)
-    transduce_cuda(op[, xf], init, xs)
+    transduce_cuda(xf, op, init, xs)
 
 Extended fold backed up by CUDA.
 """
 (foldx_cuda, transduce_cuda)
 
-foldx_cuda(op, xs; init = DefaultInit, kwargs...) =
+function foldx_cuda(op, xs; init = DefaultInit, kwargs...)
+    Base.depwarn(
+        "`foldx_cuda(...)` is deprecated, use `Folds.reduce(..., CUDAEx())` instead.",
+        :foldx_cuda,
+    )
     Transducers.fold(op, xs, CUDAEx(; kwargs...); init = init)
+end
 
 foldx_cuda(op, xf, xs; kwargs...) = foldx_cuda(op, xf(xs); kwargs...)
+
+@deprecate transduce_cuda(args...; kwargs...) transduce(args..., CUDAEx(; kwargs...))
 
 """
     CUDAEx()
@@ -36,6 +43,6 @@ end
 popsimd(; simd = nothing, kwargs...) = kwargs
 
 Transducers.transduce(xf, rf::RF, init, xs, exc::CUDAEx) where {RF} =
-    transduce_cuda(xf, rf, init, xs; popsimd(; exc.kwargs...)...)
+    _transduce_cuda(xf, rf, init, xs; popsimd(; exc.kwargs...)...)
 
 Transducers.executor_type(::CuArray) = CUDAEx
