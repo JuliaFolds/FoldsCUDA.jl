@@ -3,8 +3,12 @@ _transduce_cuda(xf::Transducer, op, init, xs; kwargs...) =
 
 function _transduce_cuda(op, init, xs;)
     xf0, coll = extract_transducer(xs)
+    # TODO: more systematic approach to this (and also support product)
     if coll isa Iterators.Zip
         arrays = coll.is
+        xf = xf0
+    elseif coll isa Iterators.Pairs
+        arrays = (keys(coll), values(coll))
         xf = xf0
     else
         arrays = (coll,)

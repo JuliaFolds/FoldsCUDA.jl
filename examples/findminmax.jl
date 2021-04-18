@@ -8,7 +8,7 @@ using FLoops
 function findminmax(xs, ex = xs isa CuArray ? CUDAEx() : ThreadedEx())
     xtypemax = typemax(eltype(xs))
     xtypemin = typemin(eltype(xs))
-    @floop ex for (x, i) in zip(xs, eachindex(xs))
+    @floop ex for (i, x) in pairs(xs)
         @reduce() do (imin = -1; i), (xmin = xtypemax; x)
             if xmin > x
                 xmin = x
