@@ -1,3 +1,4 @@
 [deps]
 FoldsCUDA = "6cd66ae4-5932-4b96-926d-e73e578e42cc"
 FoldsCUDATests = "d11caea5-3c98-4cd5-8a56-9589fe6662ee"
+Transducers = "28d57a85-8fef-5791-bfe6-a80928e7c999"
