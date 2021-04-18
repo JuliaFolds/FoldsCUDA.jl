@@ -21,7 +21,6 @@ partitionindices_xs = buildindices(floor, xs)
 
 
 using Transducers
-using Folds
 using FLoops
 
 function countparts(partitionindices)

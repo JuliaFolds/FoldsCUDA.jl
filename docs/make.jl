@@ -15,6 +15,7 @@ PAGES = [
         "Monte-Carlo π" => "examples/monte_carlo_pi.md",
         "In-place mutation with Referenceables.jl" =>
             "examples/inplace_mutation_with_referenceables.md",
+        "Partition reduce" => "examples/reduce_partition_by.md",
     ],
     hide("deprecated.md"),
 ]
