@@ -1,3 +1,5 @@
+# # Partition reduce on GPU
+
 using CUDA
 using CUDA: @allowscalar
 
@@ -19,7 +21,9 @@ end
 
 sort!(xs)
 partitionindices_xs = buildindices(floor, xs)
+nothing # hide
 
+# Counting the size of each partition
 
 import FoldsCUDA  # register the executor
 using FLoops
@@ -29,7 +33,7 @@ function countparts(partitionindices; ex = nothing)
     nparts = @allowscalar partitionindices[end]
     ys = similar(partitionindices, nparts)
 
-    ## The intra-partition reducing function that reduces # each partition to
+    ## The intra-partition reducing function that reduces each partition to
     ## a 2-tuple of index and count:
     rf_partition = Map(p -> (p, 1))'(ProductRF(right, +))
 
@@ -51,11 +55,13 @@ end
 c_xs = countparts(partitionindices_xs)
 #-
 
+# Computing the average of each partition
+
 function meanparts(xs, partitionindices; ex = nothing)
     nparts = @allowscalar partitionindices[end]
     ys = similar(xs, float(eltype(xs)), nparts)
 
-    ## The intra-partition reducing function that reduces # each partition to
+    ## The intra-partition reducing function that reduces each partition to
     ## a 3-tuple of index, count and sum:
     rf_partition = Map(((i, p),) -> (p, 1, (@inbounds xs[i])))'(ProductRF(right, +, +))
 
