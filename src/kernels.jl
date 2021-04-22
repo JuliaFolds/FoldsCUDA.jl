@@ -16,7 +16,12 @@ function _transduce_cuda(op, init, xs;)
     end
     rf = _reducingfunction(xf, op; init = init)
     acc = transduce_impl(rf, init, arrays...)
-    result = complete(rf, acc)
+    rf_dev = cudaconvert(rf)
+    if rf_dev === rf
+        result = complete(rf, acc)
+    else
+        result = complete_on_device(rf_dev, acc)
+    end
     if unreduced(result) isa DefaultInitOf
         throw(EmptyResultError(rf))
     end
@@ -90,7 +95,11 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
     acctype = if buf === nothing
         # global _ARGS = (rf, zip(arrays...), init)
         # @show fake_transduce(rf, zip(arrays...), init)
-        return_type(fake_transduce, Tuple{Typeof(rf),Typeof(zip(arrays...)),Typeof(init)})
+        fake_args = (cudaconvert(rf), zip(map(cudaconvert, arrays)...), cudaconvert(init))
+        fake_args_tt = Tuple{map(Typeof, fake_args)...}
+        # global FAKE_ARGS = fake_args
+        # global FAKE_ARGS_TT = fake_args_tt
+        return_type(fake_transduce, fake_args_tt)
         # Note: the result of `return_type` is not observable by the
         # caller of the API `transduce_impl`
     else
@@ -109,6 +118,7 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
     args = (buf0, rf, init, 0, idx, arrays...)
     # global _KARGS = args
     kernel_tt = Tuple{map(x -> Typeof(cudaconvert(x)), args)...}
+    # global KERNEL_TT = kernel_tt
     kernel = cufunction(transduce_kernel!, kernel_tt)
     effelsize = if isbitstype(acctype)
         sizeof(acctype)
@@ -274,3 +284,20 @@ AlwaysCombine(rf::Transducers.BottomRF) = AlwaysCombine(Transducers.inner(rf))
 @inline _combine(rf, a::Reduced, b) = a
 @inline _combine(rf::RF, a, b::Reduced) where {RF} = reduced(combine(rf, a, unreduced(b)))
 @inline _combine(rf::RF, a, b) where {RF} = combine(rf, a, b)
+
+# TODO: merge this into transduce_kernel!
+function complete_kernel!(buf, rf, acc)
+    buf[1] = complete(rf, acc)
+    return
+end
+
+function complete_on_device(rf_dev::RF, acc::ACC) where {RF, ACC}
+    # global CARGS = (rf_dev, acc)
+    resulttype = return_type(complete, Tuple{RF,ACC})
+    if Base.issingletontype(resulttype)
+        return resulttype.instance
+    end
+    buf = allocate_buffer(resulttype, 1)
+    CUDA.@sync @cuda complete_kernel!(buf, rf_dev, acc)
+    return @allowscalar buf[1]
+end
