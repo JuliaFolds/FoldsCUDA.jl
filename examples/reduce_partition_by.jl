@@ -1,7 +1,7 @@
 # # Partition reduce on GPU
 
-# Using
-# [`ReducePartitionBy`](https://juliafolds.github.io/Transducers.jl/dev/reference/manual/#Transducers.ReducePartitionBy)
+# By using
+# [`ReducePartitionBy`](https://juliafolds.github.io/Transducers.jl/dev/reference/manual/#Transducers.ReducePartitionBy),
 # per-partition (group) can be computed on GPU in a streaming (single-pass)
 # fashion.
 
@@ -16,7 +16,7 @@ else
 end
 nothing # hide
 
-# `ReducePartitionBy` expects partition to be continuous; i.e., sorted by the
+# `ReducePartitionBy` expects partition to be contiguous; e.g., sorted by the
 # key. We will use `floor` as the key. So, plain `sort!` works in this example.
 
 sort!(xs)
