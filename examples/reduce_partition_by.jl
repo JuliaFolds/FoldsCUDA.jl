@@ -1,5 +1,10 @@
 # # Partition reduce on GPU
 
+# Using
+# [`ReducePartitionBy`](https://juliafolds.github.io/Transducers.jl/dev/reference/manual/#Transducers.ReducePartitionBy)
+# per-partition (group) can be computed on GPU in a streaming (single-pass)
+# fashion.
+
 using CUDA
 using CUDA: @allowscalar
 
@@ -9,6 +14,16 @@ if has_cuda_gpu()
 else
     xs = randn(n)
 end
+nothing # hide
+
+# `ReducePartitionBy` expects partition to be continuous; i.e., sorted by the
+# key. We will use `floor` as the key. So, plain `sort!` works in this example.
+
+sort!(xs)
+nothing # hide
+
+# In GPU, it is convenient to know the output location before computation. So,
+# let us build unique index for each partition using `cumsum!`:
 
 function buildindices(f, xs)
     isedge(x, y) = !isequal(f(x), f(y))
@@ -19,11 +34,10 @@ function buildindices(f, xs)
     return cumsum!(partitionindices, bounds)
 end
 
-sort!(xs)
 partitionindices_xs = buildindices(floor, xs)
 nothing # hide
 
-# Counting the size of each partition
+# ### Counting the size of each partition
 
 import FoldsCUDA  # register the executor
 using FLoops
@@ -55,7 +69,7 @@ end
 c_xs = countparts(partitionindices_xs)
 #-
 
-# Computing the average of each partition
+# ### Computing the average of each partition
 
 function meanparts(xs, partitionindices; ex = nothing)
     nparts = @allowscalar partitionindices[end]
