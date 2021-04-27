@@ -46,3 +46,17 @@ Transducers.transduce(xf, rf::RF, init, xs, exc::CUDAEx) where {RF} =
     _transduce_cuda(xf, rf, init, xs; popsimd(; exc.kwargs...)...)
 
 Transducers.executor_type(::CuArray) = CUDAEx
+
+"""
+    CoalescedCUDAEx()
+
+A fold executor implemented using CUDA.jl.  It uses coalesced memory access
+while supporting non-commutative loops.  It can be faster but more limtied than
+`CUDAEx`.
+"""
+struct CoalescedCUDAEx{K} <: Executor
+    kwargs::K
+end
+
+Transducers.transduce(xf, rf::RF, init, xs, exc::CoalescedCUDAEx) where {RF} =
+    transduce_shfl(xf, rf, init, xs; popsimd(; exc.kwargs...)...)

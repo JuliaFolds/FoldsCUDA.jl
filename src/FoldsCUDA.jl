@@ -1,6 +1,6 @@
 module FoldsCUDA
 
-export CUDAEx, foldx_cuda, transduce_cuda
+export CUDAEx, CoalescedCUDAEx, foldx_cuda, transduce_cuda
 
 using CUDA
 using CUDA: @allowscalar
@@ -36,6 +36,7 @@ using Transducers:
     foldl_nocomplete
 
 include("kernels.jl")
+include("shfl.jl")
 include("api.jl")
 
 # Use README as the docstring of the module:
