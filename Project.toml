@@ -12,7 +12,7 @@ UnionArrays = "d6dd79e4-993b-11e9-1366-0de1c9fe1122"
 
 [compat]
 CUDA = "2, 3"
-GPUArrays = "6"
+GPUArrays = "6, 7"
 InitialValues = "0.2"
 Transducers = "0.4.63"
 UnionArrays = "0.1"
