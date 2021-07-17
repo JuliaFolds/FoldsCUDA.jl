@@ -3,9 +3,9 @@ module FoldsCUDA
 export CUDAEx, foldx_cuda, transduce_cuda
 
 using CUDA
+using CUDA: @allowscalar
 using Core: Typeof
 using Core.Compiler: return_type
-using GPUArrays: @allowscalar
 using InitialValues: InitialValue, asmonoid
 using UnionArrays: UnionArrays, UnionVector
 using Transducers:

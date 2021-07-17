@@ -168,10 +168,10 @@ uuid = "41a02a25-b8f0-4f67-bc48-60067656b558"
 version = "0.2.3-DEV"
 
 [[FoldsCUDA]]
-deps = ["CUDA", "GPUArrays", "InitialValues", "Transducers", "UnionArrays"]
+deps = ["CUDA", "InitialValues", "Transducers", "UnionArrays"]
 path = ".."
 uuid = "6cd66ae4-5932-4b96-926d-e73e578e42cc"
-version = "0.1.5-DEV"
+version = "0.1.6-DEV"
 
 [[Future]]
 deps = ["Random"]
