@@ -6,7 +6,5 @@ CurrentModule = FoldsCUDA
 
 ```@docs
 FoldsCUDA
-FoldsCUDA.foldx_cuda
-FoldsCUDA.transduce_cuda
 FoldsCUDA.CUDAEx
 ```

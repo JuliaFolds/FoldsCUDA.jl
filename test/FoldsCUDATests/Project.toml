@@ -24,3 +24,4 @@ Transducers = "28d57a85-8fef-5791-bfe6-a80928e7c999"
 
 [compat]
 Aqua = "0.5"
+Random123 = "~1.3"

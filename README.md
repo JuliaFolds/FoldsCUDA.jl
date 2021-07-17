@@ -15,14 +15,14 @@ parallel `for` loops that run on GPU.
 
 ## API
 
-* `foldx_cuda`: a GPU equivalent of parallel extended fold
-  [`Transducers.foldxt`](https://juliafolds.github.io/Transducers.jl/dev/reference/manual/#Transducers.foldxt).
-* `CUDAEx`: a parallel loop executor for FLoops.jl.
-
-See the documentation of
-[Transducers.jl](https://juliafolds.github.io/Transducers.jl/dev/) and
-[FLoops.jl](https://juliafolds.github.io/FLoops.jl/dev/) for more
-information.
+FoldsCUDA exports `CUDAEx`, a parallel loop
+[executor](https://juliafolds.github.io/Transducers.jl/dev/explanation/glossary/#glossary-executor).
+It can be used with the parallel `for` loop created with
+[`FLoops.@floop`](https://github.com/JuliaFolds/FLoops.jl),
+`Base`-like high-level parallel API in
+[Folds.jl](https://github.com/JuliaFolds/Folds.jl), and extensible
+transducers provided by
+[Transducers.jl](https://github.com/JuliaFolds/Transducers.jl).
 
 ## Examples
 
@@ -61,17 +61,17 @@ julia> imax  # the *first* position for the largest value
 ### `extrema` using `Transducers.TeeRF`
 
 ```julia
-julia> using Transducers
+julia> using Transducers, Folds
 
 julia> @allowscalar xs[300] = -0.5;
 
-julia> foldx_cuda(TeeRF(min, max), xs)
+julia> Folds.reduce(TeeRF(min, max), xs, CUDAEx())
 (-0.5f0, 2.0f0)
 
-julia> foldx_cuda(TeeRF(min, max), (2x for x in xs))  # iterator comprehension works
+julia> Folds.reduce(TeeRF(min, max), (2x for x in xs), CUDAEx())  # iterator comprehension works
 (-1.0f0, 4.0f0)
 
-julia> foldx_cuda(TeeRF(min, max), Map(x -> 2x), xs)  # equivalent, using a transducer
+julia> Folds.reduce(TeeRF(min, max), Map(x -> 2x)(xs), CUDAEx())  # equivalent, using a transducer
 (-1.0f0, 4.0f0)
 ```
 

@@ -24,6 +24,8 @@ reduce(TeeRF(min, max), 1:10)
 reduce(TeeRF(min, max), (2x for x in 1:10))
 reduce(TeeRF(min, max), (2x for x in 1:10 if isodd(x)); init = (typemax(Int), typemin(Int)))
 sum(1:10)
+sum(first, pairs(1:10))
+sum(last, pairs(1:10))
 sum(x^2 for x in 1:11)
 sum(x^2 for x in 1:11 if isodd(x); init = 0)
 """
