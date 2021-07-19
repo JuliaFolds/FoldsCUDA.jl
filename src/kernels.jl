@@ -174,40 +174,38 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
     return dest, buf
 end
 
-function transduce_kernel!(::Nothing, rf::F, init, basesize, idx, arrays...) where {F}
-    basecase(rf, init, idx, arrays, basesize)
-    return
-end
-
-@inline function basecase(rf::F, init, idx, arrays, basesize) where {F}
-    n = length(idx)
-    offset = threadIdx().x - 1 + (blockIdx().x - 1) * blockDim().x
-
-    i1 = offset * basesize + 1
-    if i1 <= n
-        x1 = @inbounds getvalues(idx[i1], arrays...)
-    else
-        x1 = @inbounds getvalues(idx[1], arrays...) # random value (not used)
-    end
-    acc = next(rf, start(rf, init), x1)
-    @inline getinput(i) = @inbounds getvalues(idx[i], arrays...)
-    xf = Map(getinput)
-    return foldl_nocomplete(
-        Reduction(xf, rf),
-        acc,
-        offset*basesize+2:min((offset + 1) * basesize, n),
-    )
-end
-
 function transduce_kernel!(
-    dest::AbstractArray{T},
+    dest::Union{AbstractArray,Nothing},
     rf::F,
     init,
     basesize,
     idx,
     arrays...,
-) where {F,T}
-    acc = basecase(rf, init, idx, arrays, basesize)
+) where {F}
+
+    # Use undef state of `acc` as an "extra Union"; i.e., treat as if the
+    # initial iteration is unrolled, even though it may not be possible to do so
+    # for all threads:
+    local acc
+    acc_isdefined = false
+    let n = length(idx),
+        offset = threadIdx().x - 1 + (blockIdx().x - 1) * blockDim().x,
+        i1 = offset * basesize + 1,
+        x1, xf
+        if i1 <= n
+            x1 = @inbounds getvalues(idx[i1], arrays...)
+            @inline getinput(i) = @inbounds getvalues(idx[i], arrays...)
+            xf = Map(getinput)
+            acc = foldl_nocomplete(
+                Reduction(xf, rf),
+                next(rf, start(rf, init), x1),
+                offset*basesize+2:min((offset + 1) * basesize, n),
+            )
+            acc_isdefined = true
+        end
+    end
+
+    dest === nothing && return
 
     # NOTE: Here, `acc` may have a different type for each thread. Since the
     # following code contain `sync_threads()`, we cannot introduce any dispatch
@@ -216,6 +214,7 @@ function transduce_kernel!(
     # different branches and hence deadlock.
 
     # shared mem for a complete reduction
+    T = eltype(dest)
     if isbitstype(T)
         shared = @cuDynamicSharedMem(T, (2 * blockDim().x,))
     else
@@ -226,7 +225,27 @@ function transduce_kernel!(
         @assert UInt(pointer(data, length(data) + 1)) == UInt(pointer(typeids))
         shared = UnionVector(T, data, typeids)
     end
-    @inbounds shared[threadIdx().x] = acc
+    if acc_isdefined
+        # Manual union splitting (required for non-type-stable reduction like
+        # `Folds.sum(last, pairs(xs))`):
+        if isbitstype(T)
+            @inbounds shared[threadIdx().x] = acc
+        elseif acc isa UnionArrays.eltypebyid(shared, Val(1))
+            @inbounds shared[threadIdx().x] = acc
+        elseif acc isa UnionArrays.eltypebyid(shared, Val(2))
+            @inbounds shared[threadIdx().x] = acc
+        elseif acc isa UnionArrays.eltypebyid(shared, Val(3))
+            @inbounds shared[threadIdx().x] = acc
+        elseif acc isa UnionArrays.eltypebyid(shared, Val(4))
+            @inbounds shared[threadIdx().x] = acc
+        elseif acc isa UnionArrays.eltypebyid(shared, Val(5))
+            @inbounds shared[threadIdx().x] = acc
+        elseif acc isa UnionArrays.eltypebyid(shared, Val(6))
+            @inbounds shared[threadIdx().x] = acc
+        else
+            @inbounds shared[threadIdx().x] = acc
+        end
+    end
 
     # `iseven(m)` in the `while` loop below enforces that indexing on `shared`
     # is in bounds. But, for the last block we need to make sure to combine
