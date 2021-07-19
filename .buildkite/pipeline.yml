@@ -35,6 +35,24 @@ steps:
       build.message !~ /^\[skip cuda\]/
     timeout_in_minutes: 60
 
+  - label: "Julia v1.7"
+    plugins:
+      - JuliaCI/julia#v1:
+          version: "1.7-nightly"
+      - JuliaCI/julia-coverage#v1:
+          codecov: true
+    commands:
+      - julia -e 'using Pkg; Pkg.add(name="Run", version="0.1")'
+      - julia -e 'using Run; Run.prepare("test/environments/jl17")'
+      - julia -e 'using Run; Run.test(project="test/environments/jl17")'
+    agents:
+      queue: "juliagpu"
+      cuda: "*"
+    if: |
+      build.message !~ /^\[skip gpu\]/ &&
+      build.message !~ /^\[skip cuda\]/
+    timeout_in_minutes: 60
+
 env:
   JULIA_PKG_SERVER: "" # it often struggles with our large artifacts
   CUDAFOLDS_JL_TEST_GPU: "true"
