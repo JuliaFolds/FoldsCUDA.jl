@@ -52,7 +52,7 @@ Transducers.executor_type(::CuArray) = CUDAEx
 
 A fold executor implemented using CUDA.jl.  It uses coalesced memory access
 while supporting non-commutative loops.  It can be faster but more limtied than
-`CUDAEx`.
+`CUDAEx`. Currently, it needs the reduction to specify `init`.
 """
 struct CoalescedCUDAEx{K} <: Executor
     kwargs::K
