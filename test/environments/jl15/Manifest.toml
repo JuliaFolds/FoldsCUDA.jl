@@ -446,9 +446,9 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
 [[UnionArrays]]
 deps = ["Adapt", "Setfield", "Transducers"]
-git-tree-sha1 = "fa1cd8acd42561bffdcd5264c94fb2d8bffc52b3"
+git-tree-sha1 = "c03c10e6d37def45398219747e9f925376f7524f"
 uuid = "d6dd79e4-993b-11e9-1366-0de1c9fe1122"
-version = "0.1.1"
+version = "0.1.2"
 
 [[ZygoteRules]]
 deps = ["MacroTools"]
