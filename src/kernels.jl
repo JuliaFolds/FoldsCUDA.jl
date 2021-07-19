@@ -137,8 +137,7 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
     @assert blocks <= kernel_config.blocks
 
     if Base.issingletontype(acctype)
-        # TODO: do I need sync here?
-        CUDA.@sync @cuda(
+        @cuda(
             threads = threads,
             blocks = blocks,
             shmem = shmem,
@@ -165,8 +164,7 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
     #     )
     # end
 
-    # TODO: do I need sync here?
-    CUDA.@sync @cuda(
+    @cuda(
         threads = threads,
         blocks = blocks,
         shmem = shmem,
@@ -298,6 +296,6 @@ function complete_on_device(rf_dev::RF, acc::ACC) where {RF, ACC}
         return resulttype.instance
     end
     buf = allocate_buffer(resulttype, 1)
-    CUDA.@sync @cuda complete_kernel!(buf, rf_dev, acc)
+    @cuda complete_kernel!(buf, rf_dev, acc)
     return @allowscalar buf[1]
 end
