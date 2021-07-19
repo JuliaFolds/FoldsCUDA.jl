@@ -86,7 +86,7 @@ end
     else
         buf
     end
-    args = (buf0, WARP_SIZE, rf, init, 0, idx, arrays...)
+    args = (buf0, Val{acctype}(), WARP_SIZE, rf, init, 0, idx, arrays...)
     # global _KARGS = args
     kernel_tt = Tuple{map(x -> Typeof(cudaconvert(x)), args)...}
     # global KERNEL_TT = kernel_tt
@@ -123,7 +123,16 @@ end
         @cuda(
             threads = threads,
             blocks = blocks,
-            transduce_shfl_kernel!(nothing, WARP_SIZE, rf, init, basesize, idx, arrays...)
+            transduce_shfl_kernel!(
+                nothing,
+                Val{acctype}(),
+                WARP_SIZE,
+                rf,
+                init,
+                basesize,
+                idx,
+                arrays...,
+            )
         )
         return acctype.instance, nothing
     end
@@ -139,14 +148,24 @@ end
     @cuda(
         threads = threads,
         blocks = blocks,
-        transduce_shfl_kernel!(dest, WARP_SIZE, rf, init, basesize, idx, arrays...)
+        transduce_shfl_kernel!(
+            dest,
+            Val{acctype}(),
+            WARP_SIZE,
+            rf,
+            init,
+            basesize,
+            idx,
+            arrays...,
+        )
     )
 
     return dest, buf
 end
 
 @inline function transduce_shfl_kernel!(
-    dest::AbstractArray{T},
+    dest::Union{AbstractArray,Nothing},
+    ::Val{T},
     ::Val{WARP_SIZE},
     rf::F,
     init,
@@ -156,6 +175,9 @@ end
 ) where {T,WARP_SIZE,F}
 
     @inline function _shfl_down(x, delta)
+        if dest === nothing
+            return x
+        end
         uv = unionvalue(T, x)
         return interpret(shfl_down_sync(typemax(UInt32), uv, delta, WARP_SIZE))
     end
@@ -213,6 +235,8 @@ end
         end
     end
     # @cuprintf("%03ld: acc = %f\n", threadIdx().x, acc)
+
+    dest === nothing && return
 
     # Preparing for block-wide merge:
     @assert nwarps_per_block <= 32
