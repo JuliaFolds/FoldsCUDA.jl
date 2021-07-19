@@ -44,18 +44,18 @@ function countparts(partitionindices; ex = nothing)
 end
 
 c_xs = countparts(partitionindices_xs)</code></pre><pre class="documenter-example-output">12-element Vector{Int32}:
-      10
-     541
-   22178
-  358896
- 2278586
- 5726206
- 5728749
- 2281113
-  357976
-   22417
-     539
-       5</pre><h3 id="Computing-the-average-of-each-partition"><a class="docs-heading-anchor" href="#Computing-the-average-of-each-partition">Computing the average of each partition</a><a id="Computing-the-average-of-each-partition-1"></a><a class="docs-heading-anchor-permalink" href="#Computing-the-average-of-each-partition" title="Permalink"></a></h3><pre><code class="language-julia">function meanparts(xs, partitionindices; ex = nothing)
+       3
+     535
+   22244
+  359862
+ 2278135
+ 5728045
+ 5726220
+ 2279362
+  360093
+   22187
+     523
+       7</pre><h3 id="Computing-the-average-of-each-partition"><a class="docs-heading-anchor" href="#Computing-the-average-of-each-partition">Computing the average of each partition</a><a id="Computing-the-average-of-each-partition-1"></a><a class="docs-heading-anchor-permalink" href="#Computing-the-average-of-each-partition" title="Permalink"></a></h3><pre><code class="language-julia">function meanparts(xs, partitionindices; ex = nothing)
     nparts = @allowscalar partitionindices[end]
     ys = similar(xs, float(eltype(xs)), nparts)
 
@@ -79,15 +79,15 @@ c_xs = countparts(partitionindices_xs)</code></pre><pre class="documenter-exampl
 end
 
 m_xs = meanparts(xs, partitionindices_xs)</code></pre><pre class="documenter-example-output">12-element Vector{Float64}:
- -5.091392239276184
- -4.217521146273251
- -3.260209490501038
- -2.3155622114213417
- -1.3834460567616678
- -0.459942096569832
-  0.46001290860234256
-  1.3828273353694245
-  2.315769500884232
-  3.259171696523481
-  4.228591872003017
-  5.099974908575115</pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../inplace_mutation_with_referenceables/">« In-place mutation with Referenceables.jl</a><a class="docs-footer-nextpage" href="../../deprecated/">Deprecated API »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.3 on <span class="colophon-date" title="Saturday 17 July 2021 06:44">Saturday 17 July 2021</span>. Using Julia version 1.6.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+ -5.2690260822274775
+ -4.224258155401283
+ -3.2585590533192628
+ -2.3155037345014526
+ -1.383359641023277
+ -0.45995592687936276
+  0.4598268983366883
+  1.383245365037426
+  2.315927841802494
+  3.261173182088821
+  4.2036146122138
+  5.194258627888126</pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../inplace_mutation_with_referenceables/">« In-place mutation with Referenceables.jl</a><a class="docs-footer-nextpage" href="../../deprecated/">Deprecated API »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.3 on <span class="colophon-date" title="Monday 19 July 2021 05:05">Monday 19 July 2021</span>. Using Julia version 1.6.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
