@@ -18,8 +18,6 @@ macro manual_union_split(body::Expr, conditions...)
     esc(ex)
 end
 
-valueof(::Val{x}) where {x} = x
-
 function ithtype(::Type{T}, i::Val) where {T}
     S = foldrunion(T, Val(1)) do S, j
         if j === i
