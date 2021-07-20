@@ -308,10 +308,16 @@ function complete_kernel!(buf, rf, acc)
     return
 end
 
+function complete_kernel!(rf, acc)
+    complete(rf, acc)
+    return
+end
+
 function complete_on_device(rf_dev::RF, acc::ACC) where {RF, ACC}
     # global CARGS = (rf_dev, acc)
     resulttype = return_type(complete, Tuple{RF,ACC})
     if Base.issingletontype(resulttype)
+        @cuda complete_kernel!(rf_dev, acc)
         return resulttype.instance
     end
     buf = allocate_buffer(resulttype, 1)
