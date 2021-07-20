@@ -9,6 +9,7 @@ using Core.Compiler: return_type
 using InitialValues: InitialValue, asmonoid
 using UnionArrays: UnionArrays, UnionVector
 using Transducers:
+    @return_if_reduced,
     Executor,
     Map,
     Reduced,
@@ -36,6 +37,7 @@ using Transducers:
     foldl_nocomplete
 
 include("kernels.jl")
+include("unionvalues.jl")
 include("shfl.jl")
 include("api.jl")
 
