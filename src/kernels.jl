@@ -51,7 +51,12 @@ end
 
 const _TRUE_ = Ref(true)
 
-function fake_transduce(rf, xs, init)
+function fake_transduce(rf, xs, init, ::Val{IncludeInit} = Val(false)) where {IncludeInit}
+    if IncludeInit
+        if _TRUE_[]
+            return start(rf, init)
+        end
+    end
     if _TRUE_[]
         acc1 = next(rf, start(rf, init), first(xs))
         for x in xs

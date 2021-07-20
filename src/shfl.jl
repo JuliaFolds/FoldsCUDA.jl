@@ -66,7 +66,7 @@ end
     acctype = if buf === nothing
         # global _ARGS = (rf, zip(arrays...), init)
         # @show fake_transduce(rf, zip(arrays...), init)
-        fake_args = (cudaconvert(rf), zip(map(cudaconvert, arrays)...), cudaconvert(init))
+        fake_args = (cudaconvert(rf), zip(map(cudaconvert, arrays)...), cudaconvert(init), Val(true))
         fake_args_tt = Tuple{map(Typeof, fake_args)...}
         # global FAKE_ARGS = fake_args
         # global FAKE_ARGS_TT = fake_args_tt
@@ -76,7 +76,6 @@ end
     else
         eltype(buf)
     end
-    # @show acctype
     buf0 = if Base.issingletontype(acctype)
         nothing
     elseif buf === nothing
@@ -86,7 +85,7 @@ end
     else
         buf
     end
-    args = (buf0, WARP_SIZE, rf, init, 0, idx, arrays...)
+    args = (buf0, Val{acctype}(), WARP_SIZE, rf, init, 0, idx, arrays...)
     # global _KARGS = args
     kernel_tt = Tuple{map(x -> Typeof(cudaconvert(x)), args)...}
     # global KERNEL_TT = kernel_tt
@@ -118,11 +117,21 @@ end
     blocks = cld(n, basesize * nwarps_per_block)
     @assert blocks <= kernel_config.blocks
 
+    # @show threads, blocks, basesize, acctype
     if Base.issingletontype(acctype)
         @cuda(
             threads = threads,
             blocks = blocks,
-            transduce_shfl_kernel!(nothing, WARP_SIZE, rf, init, basesize, idx, arrays...)
+            transduce_shfl_kernel!(
+                nothing,
+                Val{acctype}(),
+                WARP_SIZE,
+                rf,
+                init,
+                basesize,
+                idx,
+                arrays...,
+            )
         )
         return acctype.instance, nothing
     end
@@ -134,19 +143,28 @@ end
     else
         dest = view(buf, 1:blocks)
     end
-    # @show threads, blocks, basesize
 
     @cuda(
         threads = threads,
         blocks = blocks,
-        transduce_shfl_kernel!(dest, WARP_SIZE, rf, init, basesize, idx, arrays...)
+        transduce_shfl_kernel!(
+            dest,
+            Val{acctype}(),
+            WARP_SIZE,
+            rf,
+            init,
+            basesize,
+            idx,
+            arrays...,
+        )
     )
 
     return dest, buf
 end
 
 @inline function transduce_shfl_kernel!(
-    dest::AbstractArray{T},
+    dest::Union{AbstractArray,Nothing},
+    ::Val{T},
     ::Val{WARP_SIZE},
     rf::F,
     init,
@@ -154,6 +172,14 @@ end
     idx,
     arrays...,
 ) where {T,WARP_SIZE,F}
+
+    @inline function _shfl_down(x, delta)
+        if dest === nothing
+            return x
+        end
+        uv = unionvalue(T, x)
+        return interpret(shfl_down_sync(typemax(UInt32), uv, delta, WARP_SIZE))
+    end
 
     nwarps_per_block, _nwarps_rem = divrem(blockDim().x, WARP_SIZE)
     @assert _nwarps_rem == 0
@@ -183,7 +209,7 @@ end
         # Warp-wide merge:
         delta = 1
         while delta < WARP_SIZE
-            acc = _combine(rf, acc, shfl_down_sync(typemax(UInt32), acc, delta, WARP_SIZE))
+            acc = _combine(rf, acc, _shfl_down(acc, delta))
             delta <<= 1
         end
         if warp_offset != 0
@@ -202,12 +228,14 @@ end
 
             delta = 1
             while delta < WARP_SIZE
-                acc = _combine(rf, acc, shfl_down_sync(typemax(UInt32), acc, delta, WARP_SIZE))
+                acc = _combine(rf, acc, _shfl_down(acc, delta))
                 delta <<= 1
             end
         end
     end
     # @cuprintf("%03ld: acc = %f\n", threadIdx().x, acc)
+
+    dest === nothing && return
 
     # Preparing for block-wide merge:
     @assert nwarps_per_block <= 32
@@ -224,12 +252,14 @@ end
         @_inbounds shared[warpIdx] = acc
     end
 
-    shared_bound = let n = length(idx),
-        nbasecases = cld(n, basesize),
-        offsetb = (blockIdx().x - 1) * nwarps_per_block,
-        input_bound = nbasecases - offsetb
-        min(input_bound, nwarps_per_block)
-    end
+    shared_bound =
+        let n = length(idx),
+            nbasecases = cld(n, basesize),
+            offsetb = (blockIdx().x - 1) * nwarps_per_block,
+            input_bound = nbasecases - offsetb
+
+            min(input_bound, nwarps_per_block)
+        end
 
     # Block-wide merge:
     shared_delta = 1
@@ -247,7 +277,7 @@ end
         # Warp-wide merge:
         delta = 1
         while delta < WARP_SIZE
-            acc = _combine(rf, acc, shfl_down_sync(typemax(UInt32), acc, delta, WARP_SIZE))
+            acc = _combine(rf, acc, _shfl_down(acc, delta))
             delta <<= 1
         end
 
@@ -259,7 +289,7 @@ end
     end
 
     if threadIdx().x == 1
-        @_inbounds dest[blockIdx().x] =  acc
+        @_inbounds dest[blockIdx().x] = acc
     end
 
     return
