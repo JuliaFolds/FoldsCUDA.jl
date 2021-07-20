@@ -80,7 +80,11 @@ function runtests_impl(modules)
         if !test_gpu && requires_gpu(m)
             continue  # branch inside `for` loop for printing skipped tests
         end
-        if m in (TestTypeChangingAccumulators, Generic.TestReducePartitionBy)
+        if m in (
+            Generic.TestReducePartitionBy,
+            TestCoalescedCUDAEx,
+            TestTypeChangingAccumulators,
+        )
             VERSION < v"1.6-" && continue
         end
         tests = map(names(m, all = true)) do n
