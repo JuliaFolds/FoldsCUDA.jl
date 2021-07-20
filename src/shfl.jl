@@ -44,7 +44,6 @@ function transduce_shfl_impl(rf::F, init, arrays...) where {F}
     # @info "ys, = transduce_shfl!(nothing, rf, ...)" collect(ys)
     length(ys) == 1 && return @allowscalar ys[1]
     rf2 = AlwaysCombine(rf)
-    @assert start(rf, init) === init
     while true
         ys, = transduce_shfl!(buf, rf2, init, ys)
         # @info "ys, = transduce_shfl!(buf, rf2, ...)" Text(summary(ys))
