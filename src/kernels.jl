@@ -233,21 +233,15 @@ function transduce_kernel!(
     if acc_isdefined
         # Manual union splitting (required for non-type-stable reduction like
         # `Folds.sum(last, pairs(xs))`):
-        if isbitstype(T)
-            @inbounds shared[threadIdx().x] = acc
-        elseif acc isa UnionArrays.eltypebyid(shared, Val(1))
-            @inbounds shared[threadIdx().x] = acc
-        elseif acc isa UnionArrays.eltypebyid(shared, Val(2))
-            @inbounds shared[threadIdx().x] = acc
-        elseif acc isa UnionArrays.eltypebyid(shared, Val(3))
-            @inbounds shared[threadIdx().x] = acc
-        elseif acc isa UnionArrays.eltypebyid(shared, Val(4))
-            @inbounds shared[threadIdx().x] = acc
-        elseif acc isa UnionArrays.eltypebyid(shared, Val(5))
-            @inbounds shared[threadIdx().x] = acc
-        elseif acc isa UnionArrays.eltypebyid(shared, Val(6))
-            @inbounds shared[threadIdx().x] = acc
-        else
+        @manual_union_split(
+            isbitstype(T),
+            acc isa UnionArrays.eltypebyid(shared, Val(1)),
+            acc isa UnionArrays.eltypebyid(shared, Val(2)),
+            acc isa UnionArrays.eltypebyid(shared, Val(3)),
+            acc isa UnionArrays.eltypebyid(shared, Val(4)),
+            acc isa UnionArrays.eltypebyid(shared, Val(5)),
+            acc isa UnionArrays.eltypebyid(shared, Val(6)),
+        ) do
             @inbounds shared[threadIdx().x] = acc
         end
     end
@@ -293,6 +287,7 @@ AlwaysCombine(rf::Transducers.R_{Map}) = AlwaysCombine(Transducers.inner(rf))
 AlwaysCombine(rf::Transducers.BottomRF) = AlwaysCombine(Transducers.inner(rf))
 =#
 
+@inline Transducers.start(rf::AlwaysCombine, init) = start(rf.inner, init)
 @inline Transducers.start(::AlwaysCombine, init::CombineInit) = init
 @inline Transducers.next(::AlwaysCombine, ::CombineInit, input) = first(input)
 @inline Transducers.next(rf::F, acc, input) where {F<:AlwaysCombine} =
