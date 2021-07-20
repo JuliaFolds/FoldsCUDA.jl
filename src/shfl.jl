@@ -44,10 +44,8 @@ function transduce_shfl_impl(rf::F, init, arrays...) where {F}
     # @info "ys, = transduce_shfl!(nothing, rf, ...)" collect(ys)
     length(ys) == 1 && return @allowscalar ys[1]
     rf2 = AlwaysCombine(rf)
-    combine_init = init  # require type-stable init
-    @assert start(rf, init) === init
     while true
-        ys, = transduce_shfl!(buf, rf2, combine_init, ys)
+        ys, = transduce_shfl!(buf, rf2, init, ys)
         # @info "ys, = transduce_shfl!(buf, rf2, ...)" Text(summary(ys))
         # @info "ys, = transduce_shfl!(buf, rf2, ...)" collect(ys)
         length(ys) == 1 && return @allowscalar ys[1]
@@ -205,7 +203,16 @@ end
     while warp_leader_offset <= main_bound
         i = warp_leader_offset + warp_offset + 1
         # @cuprintf("%03ld: i = %d\n", threadIdx().x, Int(i))
-        acc = next(rf, acc, @_inbounds getvalues(idx[i], arrays...))
+        acc = @manual_union_split(
+            acc isa ithtype(T, Val(1)),
+            acc isa ithtype(T, Val(2)),
+            acc isa ithtype(T, Val(3)),
+            acc isa ithtype(T, Val(4)),
+            acc isa ithtype(T, Val(5)),
+            acc isa ithtype(T, Val(6)),
+        ) do
+            next(rf, acc, @_inbounds getvalues(idx[i], arrays...))
+        end
 
         # Warp-wide merge:
         delta = 1
@@ -224,7 +231,16 @@ end
         let i = warp_leader_offset + warp_offset + 1
             # @cuprintf("%03ld: (rem) i = %d\n", threadIdx().x, Int(i))
             if i <= lastindex(idx)
-                acc = next(rf, acc, @_inbounds getvalues(idx[i], arrays...))
+                acc = @manual_union_split(
+                    acc isa ithtype(T, Val(1)),
+                    acc isa ithtype(T, Val(2)),
+                    acc isa ithtype(T, Val(3)),
+                    acc isa ithtype(T, Val(4)),
+                    acc isa ithtype(T, Val(5)),
+                    acc isa ithtype(T, Val(6)),
+                ) do
+                    next(rf, acc, @_inbounds getvalues(idx[i], arrays...))
+                end
             end
 
             delta = 1

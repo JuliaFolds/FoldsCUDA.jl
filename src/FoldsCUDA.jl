@@ -36,6 +36,7 @@ using Transducers:
     extract_transducer,
     foldl_nocomplete
 
+include("utils.jl")
 include("kernels.jl")
 include("unionvalues.jl")
 include("shfl.jl")
