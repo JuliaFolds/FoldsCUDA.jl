@@ -13,8 +13,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - julia-version: '1.5'
-            envname: 'jl15'
           - julia-version: '~1.6.0-rc1'
             envname: 'jl16'
       fail-fast: false
