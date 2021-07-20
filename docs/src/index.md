@@ -7,4 +7,5 @@ CurrentModule = FoldsCUDA
 ```@docs
 FoldsCUDA
 FoldsCUDA.CUDAEx
+FoldsCUDA.CoalescedCUDAEx
 ```
