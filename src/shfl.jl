@@ -114,7 +114,7 @@ end
     nwarps_per_block, _nwarps_rem = divrem(threads, wsize)
     # @show threads nwarps_per_block _nwarps_rem
     @assert _nwarps_rem % wsize == 0
-    basesize = max(wsize, cld(n, kernel_config.blocks * nwarps_per_block))
+    basesize = nextwarp(dev, cld(n, kernel_config.blocks * nwarps_per_block))
     blocks = cld(n, basesize * nwarps_per_block)
     @assert blocks <= kernel_config.blocks
 
