@@ -58,6 +58,12 @@ git-tree-sha1 = "aebf55e6d7795e02ca500a689d326ac979aaf89e"
 uuid = "9718e550-a3fa-408a-8086-8db961cd8217"
 version = "0.1.1"
 
+[[deps.BenchmarkTools]]
+deps = ["JSON", "Logging", "Printf", "Statistics", "UUIDs"]
+git-tree-sha1 = "c31ebabde28d102b602bada60ce8922c266d205b"
+uuid = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+version = "1.1.1"
+
 [[deps.CEnum]]
 git-tree-sha1 = "215a9aa4a1f23fbd05b92769fdd62559488d70e9"
 uuid = "fa961155-64e5-5f13-b03f-caf6b980ea82"
@@ -180,8 +186,14 @@ path = "../../.."
 uuid = "6cd66ae4-5932-4b96-926d-e73e578e42cc"
 version = "0.1.7-DEV"
 
+[[deps.FoldsCUDABenchmarks]]
+deps = ["BenchmarkTools", "CUDA", "Folds", "FoldsCUDA"]
+path = "../../../benchmark/FoldsCUDABenchmarks"
+uuid = "1457febb-a09b-4652-98c9-46b8ccd8ff53"
+version = "0.1.0"
+
 [[deps.FoldsCUDATests]]
-deps = ["Adapt", "Aqua", "CUDA", "Documenter", "FLoops", "Folds", "FoldsCUDA", "GPUArrays", "InitialValues", "LiterateTest", "Random", "Random123", "Referenceables", "Setfield", "SplittablesBase", "Test", "Transducers"]
+deps = ["Adapt", "Aqua", "CUDA", "Documenter", "FLoops", "Folds", "FoldsCUDA", "FoldsCUDABenchmarks", "GPUArrays", "InitialValues", "LiterateTest", "Random", "Random123", "Referenceables", "Setfield", "SplittablesBase", "Test", "Transducers"]
 path = "../../FoldsCUDATests"
 uuid = "d11caea5-3c98-4cd5-8a56-9589fe6662ee"
 version = "0.1.0"
