@@ -487,7 +487,7 @@ uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [[TestFunctionRunner]]
 deps = ["Distributed", "LoadAllPackages", "Pkg", "Test"]
-git-tree-sha1 = "f53d54e4b94e42194ee38b55c9bc6eadfdf16043"
+git-tree-sha1 = "78a77e769b8e10276da5b68eff22232449de8766"
 repo-rev = "master"
 repo-url = "https://github.com/tkf/TestFunctionRunner.jl"
 uuid = "792026f5-ac9a-4a19-adcb-47b0ce2deb5d"
