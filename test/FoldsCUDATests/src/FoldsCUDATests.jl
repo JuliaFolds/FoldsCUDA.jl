@@ -1,5 +1,6 @@
 module FoldsCUDATests
 
+import CUDA
 using GPUArrays
 using Test
 using TestFunctionRunner
@@ -24,9 +25,13 @@ function runtests_unionarrays(; kwargs...)
     TestFunctionRunner.run(UNIONARRAYS_TESTS; kwargs...)
 end
 
-function __init__()
-    # TODO: add pre/post test hook to TestFunctionRunner?
+function before_test_module()
     GPUArrays.allowscalar(false)
+
+    if lowercase(get(ENV, "CI", "false")) == "true"
+        CUDA.versioninfo()
+        println()
+    end
 end
 
 end # module
