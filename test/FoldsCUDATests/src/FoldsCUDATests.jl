@@ -17,8 +17,11 @@ include_tests(@__MODULE__)
 should_test_module() = should_test_gpu()
 end
 
-function runtests_unionarrays()
-    TestFunctionRunner.run(TestTypeChangingAccumulators)
+""" A list of tests to be run from UnionArrays.jl """
+const UNIONARRAYS_TESTS = [TestGPU.TestTypeChangingAccumulators]
+
+function runtests_unionarrays(; kwargs...)
+    TestFunctionRunner.run(UNIONARRAYS_TESTS; kwargs...)
 end
 
 function __init__()
