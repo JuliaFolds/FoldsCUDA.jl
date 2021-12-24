@@ -1,5 +1,6 @@
 JULIA = julia
 JULIA16 = julia1.6
+JULIA17 = julia1.7
 JULIA_OPTS = --startup-file=no
 
 .PHONY: instantiate resolve update _jlpkg*
@@ -21,6 +22,9 @@ _jlpkg: $(JLPKG_TARGETS)
 
 _jlpkg-test/environments/jl16:
 	$(JULIA16) $(JUSLIA_CMD) -e 'using Pkg; Pkg.$(JLPKG_COMMAND)()' --project=test/environments/jl16
+
+_jlpkg-test/environments/jl17:
+	$(JULIA17) $(JUSLIA_CMD) -e 'using Pkg; Pkg.$(JLPKG_COMMAND)()' --project=test/environments/jl17
 
 _jlpkg-docs:
 	$(JULIA) $(JUSLIA_CMD) -e 'using Pkg; Pkg.$(JLPKG_COMMAND)()' --project=docs
