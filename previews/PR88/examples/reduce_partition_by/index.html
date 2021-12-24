@@ -43,18 +43,19 @@ function countparts(partitionindices; ex = nothing)
     return ys
 end
 
-c_xs = countparts(partitionindices_xs)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">11-element Vector{Int32}:
-       5
-     525
-   22155
-  358725
- 2279114
- 5728319
- 5726904
- 2280028
-  358706
-   22158
-     577</code></pre><h3 id="Computing-the-average-of-each-partition"><a class="docs-heading-anchor" href="#Computing-the-average-of-each-partition">Computing the average of each partition</a><a id="Computing-the-average-of-each-partition-1"></a><a class="docs-heading-anchor-permalink" href="#Computing-the-average-of-each-partition" title="Permalink"></a></h3><pre><code class="language-julia hljs">function meanparts(xs, partitionindices; ex = nothing)
+c_xs = countparts(partitionindices_xs)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">12-element Vector{Int32}:
+       7
+     558
+   22325
+  358034
+ 2280484
+ 5725111
+ 5728348
+ 2280824
+  358835
+   22145
+     540
+       5</code></pre><h3 id="Computing-the-average-of-each-partition"><a class="docs-heading-anchor" href="#Computing-the-average-of-each-partition">Computing the average of each partition</a><a id="Computing-the-average-of-each-partition-1"></a><a class="docs-heading-anchor-permalink" href="#Computing-the-average-of-each-partition" title="Permalink"></a></h3><pre><code class="language-julia hljs">function meanparts(xs, partitionindices; ex = nothing)
     nparts = @allowscalar partitionindices[end]
     ys = similar(xs, float(eltype(xs)), nparts)
 
@@ -77,15 +78,16 @@ c_xs = countparts(partitionindices_xs)</code></pre><pre class="documenter-exampl
     return ys
 end
 
-m_xs = meanparts(xs, partitionindices_xs)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">11-element Vector{Float64}:
- -5.113236803640102
- -4.231888449538697
- -3.260262526375894
- -2.316210586990604
- -1.3830941154453147
- -0.4598600540768147
-  0.45977278441456615
-  1.3829953818798022
-  2.3159660078255517
-  3.2599080004673184
-  4.204566863007094</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../inplace_mutation_with_referenceables/">« In-place mutation with Referenceables.jl</a><a class="docs-footer-nextpage" href="../../deprecated/">Deprecated API »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.10 on <span class="colophon-date" title="Friday 24 December 2021 08:12">Friday 24 December 2021</span>. Using Julia version 1.6.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+m_xs = meanparts(xs, partitionindices_xs)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">12-element Vector{Float64}:
+ -5.174983448564492
+ -4.21637572026137
+ -3.259450861964082
+ -2.3159055885627007
+ -1.383211189896276
+ -0.45991782262517344
+  0.4597751475670113
+  1.3832070070004943
+  2.3153333660777977
+  3.2608842529065853
+  4.234393619619569
+  5.33602515736292</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../inplace_mutation_with_referenceables/">« In-place mutation with Referenceables.jl</a><a class="docs-footer-nextpage" href="../../deprecated/">Deprecated API »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.10 on <span class="colophon-date" title="Friday 24 December 2021 08:54">Friday 24 December 2021</span>. Using Julia version 1.6.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
