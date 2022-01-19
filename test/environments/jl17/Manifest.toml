@@ -198,7 +198,7 @@ uuid = "1457febb-a09b-4652-98c9-46b8ccd8ff53"
 version = "0.1.0"
 
 [[deps.FoldsCUDATests]]
-deps = ["Adapt", "Aqua", "CUDA", "Documenter", "FLoops", "Folds", "FoldsCUDA", "FoldsCUDABenchmarks", "GPUArrays", "InitialValues", "LiterateTest", "Random", "Random123", "Referenceables", "Setfield", "SplittablesBase", "Test", "Transducers"]
+deps = ["Adapt", "Aqua", "CUDA", "Documenter", "FLoops", "Folds", "FoldsCUDA", "FoldsCUDABenchmarks", "GPUArrays", "InitialValues", "LiterateTest", "Random", "Random123", "Referenceables", "Setfield", "SplittablesBase", "Test", "TestFunctionRunner", "Transducers"]
 path = "../../FoldsCUDATests"
 uuid = "d11caea5-3c98-4cd5-8a56-9589fe6662ee"
 version = "0.1.0"
@@ -312,6 +312,12 @@ deps = ["Test"]
 git-tree-sha1 = "f10e6f4d46da26a33e9cea7a5aed3476b592bbfb"
 uuid = "d77d25b0-90d3-4a16-b10a-412a9d48f625"
 version = "0.1.4"
+
+[[deps.LoadAllPackages]]
+deps = ["Pkg"]
+git-tree-sha1 = "de9eababca8fdc9b6b207ed05f99693faa608230"
+uuid = "b37bcd2d-1570-475d-a8c6-9b4fae6d0ba9"
+version = "0.1.0"
 
 [[deps.LogExpFunctions]]
 deps = ["ChainRulesCore", "ChangesOfVariables", "DocStringExtensions", "InverseFunctions", "IrrationalConstants", "LinearAlgebra"]
@@ -501,9 +507,20 @@ version = "1.6.1"
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
 
+[[deps.Terminators]]
+git-tree-sha1 = "e72e157c08773595052733e8b39944a49b0109d9"
+uuid = "b0858c3f-a9bf-4cba-a0e3-6aaeea5477ac"
+version = "0.1.1"
+
 [[deps.Test]]
 deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[[deps.TestFunctionRunner]]
+deps = ["Distributed", "LoadAllPackages", "Pkg", "Terminators", "Test"]
+git-tree-sha1 = "9b4dc94c31f85a386e7e7793d78dd4c237f8cfdc"
+uuid = "792026f5-ac9a-4a19-adcb-47b0ce2deb5d"
+version = "0.1.4"
 
 [[deps.TimerOutputs]]
 deps = ["ExprTools", "Printf"]
