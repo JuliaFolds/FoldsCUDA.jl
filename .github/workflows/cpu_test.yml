@@ -13,8 +13,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - julia-version: '~1.6.0-rc1'
+          - julia-version: '1.6'
             envname: 'jl16'
+          - julia-version: '1.7'
+            envname: 'jl17'
       fail-fast: false
     env:
       CUDAFOLDS_JL_TEST_GPU: "false"
