@@ -500,17 +500,20 @@ version = "1.6.1"
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
 
+[[Terminators]]
+git-tree-sha1 = "e72e157c08773595052733e8b39944a49b0109d9"
+uuid = "b0858c3f-a9bf-4cba-a0e3-6aaeea5477ac"
+version = "0.1.1"
+
 [[Test]]
 deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [[TestFunctionRunner]]
-deps = ["Distributed", "LoadAllPackages", "Pkg", "Test"]
-git-tree-sha1 = "960d1c79fdf61ce63826c161e87ccbb589e460b5"
-repo-rev = "master"
-repo-url = "https://github.com/tkf/TestFunctionRunner.jl"
+deps = ["Distributed", "LoadAllPackages", "Pkg", "Terminators", "Test"]
+git-tree-sha1 = "5e58b00d31869b4972aad04e6b34558653b2831f"
 uuid = "792026f5-ac9a-4a19-adcb-47b0ce2deb5d"
-version = "0.1.0"
+version = "0.1.3"
 
 [[TimerOutputs]]
 deps = ["ExprTools", "Printf"]
