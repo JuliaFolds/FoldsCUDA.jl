@@ -89,6 +89,24 @@ Base.@propagate_inbounds getvalues(i) = ()
 Base.@propagate_inbounds getvalues(i, a) = (a[i],)
 Base.@propagate_inbounds getvalues(i, a, as...) = (a[i], getvalues(i, as...)...)
 
+function _infer_acctype(rf::F, init, arrays...) where {F}
+    fake_args = (cudaconvert(rf), zip(map(cudaconvert, arrays)...), cudaconvert(init))
+    fake_args_tt = Tuple{map(Typeof, fake_args)...}
+    acctype = return_type(fake_transduce, fake_args_tt)
+    if acctype === Union{}
+        host_args = (rf, zip(arrays...), init)
+        acctype_host = return_type(fake_transduce, Tuple{map(Typeof, host_args)...})
+        if RUN_ON_HOST_IF_NORETURN[] && acctype_host === Union{}
+            fake_transduce(host_args...)
+            error("unreachable: incorrect inference")
+        end
+        throw(FailedInference(fake_transduce, fake_args, acctype, host_args, acctype_host))
+    end
+    return acctype
+    # Note: the result of `return_type` is not observable by the caller of the
+    # API `transduce_impl`
+end
+
 function _transduce!(buf, rf::F, init, arrays...) where {F}
     idx = eachindex(arrays...)
     n = Int(length(idx))  # e.g., `length(UInt64(0):UInt64(1))` is not an `Int`
@@ -98,15 +116,7 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
         wanted_threads > max_threads ? prevpow(2, max_threads) : wanted_threads
 
     acctype = if buf === nothing
-        # global _ARGS = (rf, zip(arrays...), init)
-        # @show fake_transduce(rf, zip(arrays...), init)
-        fake_args = (cudaconvert(rf), zip(map(cudaconvert, arrays)...), cudaconvert(init))
-        fake_args_tt = Tuple{map(Typeof, fake_args)...}
-        # global FAKE_ARGS = fake_args
-        # global FAKE_ARGS_TT = fake_args_tt
-        return_type(fake_transduce, fake_args_tt)
-        # Note: the result of `return_type` is not observable by the
-        # caller of the API `transduce_impl`
+        _infer_acctype(rf, init, arrays...)
     else
         eltype(buf)
     end
