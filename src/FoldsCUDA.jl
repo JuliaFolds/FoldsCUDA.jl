@@ -41,6 +41,7 @@ include("kernels.jl")
 include("unionvalues.jl")
 include("shfl.jl")
 include("api.jl")
+include("introspection.jl")
 
 # Use README as the docstring of the module:
 @doc let path = joinpath(dirname(@__DIR__), "README.md")
