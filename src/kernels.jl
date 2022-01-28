@@ -92,10 +92,10 @@ Base.@propagate_inbounds getvalues(i, a, as...) = (a[i], getvalues(i, as...)...)
 function _infer_acctype(rf::F, init, arrays...) where {F}
     fake_args = (cudaconvert(rf), zip(map(cudaconvert, arrays)...), cudaconvert(init))
     fake_args_tt = Tuple{map(Typeof, fake_args)...}
-    acctype = return_type(fake_transduce, fake_args_tt)
+    acctype = CUDA.return_type(fake_transduce, fake_args_tt)
     if acctype === Union{}
         host_args = (rf, zip(arrays...), init)
-        acctype_host = return_type(fake_transduce, Tuple{map(Typeof, host_args)...})
+        acctype_host = Core.Compiler.return_type(fake_transduce, Tuple{map(Typeof, host_args)...})
         if RUN_ON_HOST_IF_NORETURN[] && acctype_host === Union{}
             fake_transduce(host_args...)
             error("unreachable: incorrect inference")
@@ -325,7 +325,7 @@ end
 
 function complete_on_device(rf_dev::RF, acc::ACC) where {RF, ACC}
     # global CARGS = (rf_dev, acc)
-    resulttype = return_type(complete, Tuple{RF,ACC})
+    resulttype = CUDA.return_type(complete, Tuple{RF,ACC})
     if Base.issingletontype(resulttype)
         @cuda complete_kernel!(rf_dev, acc)
         return resulttype.instance
