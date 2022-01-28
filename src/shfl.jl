@@ -63,7 +63,7 @@ end
     WARP_SIZE = Val(wsize)
 
     acctype = if buf === nothing
-        _infer_acctype(rf, init, arrays...)
+        _infer_acctype(rf, init, arrays, true)
     else
         eltype(buf)
     end

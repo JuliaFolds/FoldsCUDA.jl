@@ -89,8 +89,13 @@ Base.@propagate_inbounds getvalues(i) = ()
 Base.@propagate_inbounds getvalues(i, a) = (a[i],)
 Base.@propagate_inbounds getvalues(i, a, as...) = (a[i], getvalues(i, as...)...)
 
-function _infer_acctype(rf::F, init, arrays...) where {F}
-    fake_args = (cudaconvert(rf), zip(map(cudaconvert, arrays)...), cudaconvert(init))
+function _infer_acctype(rf, init, arrays, include_init::Bool = false)
+    fake_args = (
+        cudaconvert(rf),
+        zip(map(cudaconvert, arrays)...),
+        cudaconvert(init),
+        Val(include_init),
+    )
     fake_args_tt = Tuple{map(Typeof, fake_args)...}
     acctype = CUDA.return_type(fake_transduce, fake_args_tt)
     if acctype === Union{}
@@ -116,7 +121,7 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
         wanted_threads > max_threads ? prevpow(2, max_threads) : wanted_threads
 
     acctype = if buf === nothing
-        _infer_acctype(rf, init, arrays...)
+        _infer_acctype(rf, init, arrays)
     else
         eltype(buf)
     end
