@@ -25,6 +25,7 @@ function test_failedinference_invalid_type()
 end
 
 function test_failedinference_code_typed()
+    CUDA.functional() || return
     err = FailedInference(identity, (1,), Int, (1,), Int)
     @test CUDA.code_typed(err) isa Any
 end
