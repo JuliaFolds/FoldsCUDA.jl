@@ -5,6 +5,7 @@ export CUDAEx, CoalescedCUDAEx, foldx_cuda, transduce_cuda
 using CUDA
 using CUDA: @allowscalar
 using Core: Typeof
+using FLoopsBase: AbstractScratchSpace
 using InitialValues: InitialValue, asmonoid
 using UnionArrays: UnionArrays, UnionVector
 using Transducers:
@@ -32,8 +33,9 @@ using Transducers:
     IdentityTransducer,
     Reduction,
     _reducingfunction,
+    completebasecase,
     extract_transducer,
-    foldl_nocomplete
+    foldl_basecase
 
 include("utils.jl")
 include("kernels.jl")

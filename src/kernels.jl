@@ -49,12 +49,19 @@ function transduce_impl(rf::F, init, arrays...) where {F}
     end
 end
 
+
+afterbasecase(acc) = acc
+afterbasecase(::AbstractScratchSpace) = nothing
+@inline afterbasecase(acc::Tuple) = map(afterbasecase, acc)
+@inline afterbasecase(acc::NTuple{names}) where {names} =
+    NamedTuple{names}(map(afterbasecase, Tuple(acc)))
+
 const _TRUE_ = Ref(true)
 
 function fake_transduce(rf, xs, init, ::Val{IncludeInit} = Val(false)) where {IncludeInit}
     if IncludeInit
         if _TRUE_[]
-            return start(rf, init)
+            return afterbasecase(completebasecase(rf, start(rf, init)))
         end
     end
     if _TRUE_[]
@@ -62,9 +69,13 @@ function fake_transduce(rf, xs, init, ::Val{IncludeInit} = Val(false)) where {In
         for x in xs
             acc1 = next(rf, acc1, x)
         end
-        return acc1
+        return completebasecase(rf, afterbasecase(acc1))
     else
-        return _combine(rf, fake_transduce(rf, xs, init), fake_transduce(rf, xs, init))
+        acc1 = fake_transduce(rf, xs, init)
+        acc2 = fake_transduce(rf, xs, init)
+        acc3 = _combine(rf, afterbasecase(acc1), afterbasecase(acc2))
+        acc4 = completebasecase(rf, acc3)
+        return afterbasecase(acc4)
     end
 end
 
@@ -98,7 +109,7 @@ function _infer_acctype(rf, init, arrays, include_init::Bool = false)
     )
     fake_args_tt = Tuple{map(Typeof, fake_args)...}
     acctype = CUDA.return_type(fake_transduce, fake_args_tt)
-    if acctype === Union{}
+    if acctype === Union{} || !Base.datatype_pointerfree(Some{acctype})
         host_args = (rf, zip(arrays...), init)
         acctype_host = Core.Compiler.return_type(fake_transduce, Tuple{map(Typeof, host_args)...})
         if RUN_ON_HOST_IF_NORETURN[] && acctype_host === Union{}
@@ -194,6 +205,13 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
     return dest, buf
 end
 
+# Since CUDA already requires that everything is inlined, `restack` is not
+# useful.  Instead, it's better to avoid introducing extra function calls to
+# reduce the change that inliner gives up.
+@static if isdefined(Transducers, :restack) && isdefined(CUDA, Symbol("@device_override"))
+    CUDA.@device_override Transducers.restack(x) = x
+end
+
 function transduce_kernel!(
     dest::Union{AbstractArray,Nothing},
     rf::F,
@@ -246,6 +264,7 @@ function transduce_kernel!(
         shared = UnionVector(T, data, typeids)
     end
     if acc_isdefined
+        acc = afterbasecase(acc)
         # Manual union splitting (required for non-type-stable reduction like
         # `Folds.sum(last, pairs(xs))`):
         @manual_union_split(

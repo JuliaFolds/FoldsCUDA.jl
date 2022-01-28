@@ -19,6 +19,7 @@ function Base.showerror(io::IO, err::FailedInference)
         println(io)
         print(io, "Note: on the host, the return type is inferred as ", err.host_return)
     end
+    println(io)
     printstyled(io, "HINT"; bold = true, color = :light_black)
     printstyled(
         io,
