@@ -22,12 +22,12 @@ jobs:
 
       # https://github.com/tkf/julia-update-manifests
       - name: Update */Manifest.toml
-        uses: tkf/julia-update-manifests@v1
+        uses: tkf/julia-update-manifests@dont_precompile
         with:
           version: '1.6'
           projects: test/environments/jl16 docs
       - name: Update */Manifest.toml
-        uses: tkf/julia-update-manifests@v1
+        uses: tkf/julia-update-manifests@dont_precompile
         with:
           version: '1.7'
           projects: test/environments/jl17
