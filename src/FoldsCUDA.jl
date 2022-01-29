@@ -5,7 +5,6 @@ export CUDAEx, CoalescedCUDAEx, foldx_cuda, transduce_cuda
 using CUDA
 using CUDA: @allowscalar
 using Core: Typeof
-using Core.Compiler: return_type
 using InitialValues: InitialValue, asmonoid
 using UnionArrays: UnionArrays, UnionVector
 using Transducers:
@@ -41,6 +40,7 @@ include("kernels.jl")
 include("unionvalues.jl")
 include("shfl.jl")
 include("api.jl")
+include("introspection.jl")
 
 # Use README as the docstring of the module:
 @doc let path = joinpath(dirname(@__DIR__), "README.md")
