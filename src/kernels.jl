@@ -89,6 +89,29 @@ Base.@propagate_inbounds getvalues(i) = ()
 Base.@propagate_inbounds getvalues(i, a) = (a[i],)
 Base.@propagate_inbounds getvalues(i, a, as...) = (a[i], getvalues(i, as...)...)
 
+function _infer_acctype(rf, init, arrays, include_init::Bool = false)
+    fake_args = (
+        cudaconvert(rf),
+        zip(map(cudaconvert, arrays)...),
+        cudaconvert(init),
+        Val(include_init),
+    )
+    fake_args_tt = Tuple{map(Typeof, fake_args)...}
+    acctype = CUDA.return_type(fake_transduce, fake_args_tt)
+    if acctype === Union{}
+        host_args = (rf, zip(arrays...), init)
+        acctype_host = Core.Compiler.return_type(fake_transduce, Tuple{map(Typeof, host_args)...})
+        if RUN_ON_HOST_IF_NORETURN[] && acctype_host === Union{}
+            fake_transduce(host_args...)
+            error("unreachable: incorrect inference")
+        end
+        throw(FailedInference(fake_transduce, fake_args, acctype, host_args, acctype_host))
+    end
+    return acctype
+    # Note: the result of `return_type` is not observable by the caller of the
+    # API `transduce_impl`
+end
+
 function _transduce!(buf, rf::F, init, arrays...) where {F}
     idx = eachindex(arrays...)
     n = Int(length(idx))  # e.g., `length(UInt64(0):UInt64(1))` is not an `Int`
@@ -98,15 +121,7 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
         wanted_threads > max_threads ? prevpow(2, max_threads) : wanted_threads
 
     acctype = if buf === nothing
-        # global _ARGS = (rf, zip(arrays...), init)
-        # @show fake_transduce(rf, zip(arrays...), init)
-        fake_args = (cudaconvert(rf), zip(map(cudaconvert, arrays)...), cudaconvert(init))
-        fake_args_tt = Tuple{map(Typeof, fake_args)...}
-        # global FAKE_ARGS = fake_args
-        # global FAKE_ARGS_TT = fake_args_tt
-        return_type(fake_transduce, fake_args_tt)
-        # Note: the result of `return_type` is not observable by the
-        # caller of the API `transduce_impl`
+        _infer_acctype(rf, init, arrays)
     else
         eltype(buf)
     end
@@ -315,7 +330,7 @@ end
 
 function complete_on_device(rf_dev::RF, acc::ACC) where {RF, ACC}
     # global CARGS = (rf_dev, acc)
-    resulttype = return_type(complete, Tuple{RF,ACC})
+    resulttype = CUDA.return_type(complete, Tuple{RF,ACC})
     if Base.issingletontype(resulttype)
         @cuda complete_kernel!(rf_dev, acc)
         return resulttype.instance

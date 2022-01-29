@@ -63,15 +63,7 @@ end
     WARP_SIZE = Val(wsize)
 
     acctype = if buf === nothing
-        # global _ARGS = (rf, zip(arrays...), init)
-        # @show fake_transduce(rf, zip(arrays...), init)
-        fake_args = (cudaconvert(rf), zip(map(cudaconvert, arrays)...), cudaconvert(init), Val(true))
-        fake_args_tt = Tuple{map(Typeof, fake_args)...}
-        # global FAKE_ARGS = fake_args
-        # global FAKE_ARGS_TT = fake_args_tt
-        return_type(fake_transduce, fake_args_tt)
-        # Note: the result of `return_type` is not observable by the
-        # caller of the API `transduce_impl`
+        _infer_acctype(rf, init, arrays, true)
     else
         eltype(buf)
     end
