@@ -53,8 +53,8 @@ end
 afterbasecase(acc) = acc
 afterbasecase(::AbstractScratchSpace) = nothing
 @inline afterbasecase(acc::Tuple) = map(afterbasecase, acc)
-@inline afterbasecase(acc::NTuple{names}) where {names} =
-    NamedTuple{names}(map(afterbasecase, Tuple(acc)))
+# @inline afterbasecase(acc::NamedTuple{names}) where {names} =
+#     NamedTuple{names}(map(afterbasecase, Tuple(acc)))
 
 const _TRUE_ = Ref(true)
 
