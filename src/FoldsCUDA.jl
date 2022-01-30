@@ -32,8 +32,9 @@ using Transducers:
     IdentityTransducer,
     Reduction,
     _reducingfunction,
+    completebasecase,
     extract_transducer,
-    foldl_nocomplete
+    foldl_basecase
 
 include("utils.jl")
 include("kernels.jl")

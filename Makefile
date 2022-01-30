@@ -27,4 +27,4 @@ _jlpkg-test/environments/jl17:
 	$(JULIA17) $(JUSLIA_CMD) -e 'using Pkg; Pkg.$(JLPKG_COMMAND)()' --project=test/environments/jl17
 
 _jlpkg-docs:
-	$(JULIA) $(JUSLIA_CMD) -e 'using Pkg; Pkg.$(JLPKG_COMMAND)()' --project=docs
+	$(JULIA16) $(JUSLIA_CMD) -e 'using Pkg; Pkg.$(JLPKG_COMMAND)()' --project=docs

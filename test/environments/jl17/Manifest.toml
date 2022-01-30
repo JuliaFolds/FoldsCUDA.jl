@@ -189,7 +189,7 @@ version = "0.2.6"
 deps = ["CUDA", "InitialValues", "Transducers", "UnionArrays"]
 path = "../../.."
 uuid = "6cd66ae4-5932-4b96-926d-e73e578e42cc"
-version = "0.1.8-DEV"
+version = "0.1.9-DEV"
 
 [[deps.FoldsCUDABenchmarks]]
 deps = ["BenchmarkTools", "CUDA", "Folds", "FoldsCUDA"]
@@ -198,7 +198,7 @@ uuid = "1457febb-a09b-4652-98c9-46b8ccd8ff53"
 version = "0.1.0"
 
 [[deps.FoldsCUDATests]]
-deps = ["Adapt", "Aqua", "CUDA", "Documenter", "FLoops", "Folds", "FoldsCUDA", "FoldsCUDABenchmarks", "GPUArrays", "InitialValues", "LiterateTest", "Random", "Random123", "Referenceables", "Setfield", "SplittablesBase", "Test", "TestFunctionRunner", "Transducers"]
+deps = ["Adapt", "Aqua", "CUDA", "Documenter", "FLoops", "Folds", "FoldsCUDA", "FoldsCUDABenchmarks", "GPUArrays", "InitialValues", "LiterateTest", "Random", "Random123", "Referenceables", "Setfield", "SplittablesBase", "StaticArrays", "Test", "TestFunctionRunner", "Transducers"]
 path = "../../FoldsCUDATests"
 uuid = "d11caea5-3c98-4cd5-8a56-9589fe6662ee"
 version = "0.1.0"
@@ -483,6 +483,12 @@ git-tree-sha1 = "39c9f91521de844bad65049efd4f9223e7ed43f9"
 uuid = "171d559e-b47b-412a-8079-5efa626c420e"
 version = "0.1.14"
 
+[[deps.StaticArrays]]
+deps = ["LinearAlgebra", "Random", "Statistics"]
+git-tree-sha1 = "2884859916598f974858ff01df7dfc6c708dd895"
+uuid = "90137ffa-7385-5640-81b9-e52037218182"
+version = "1.3.3"
+
 [[deps.Statistics]]
 deps = ["LinearAlgebra", "SparseArrays"]
 uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
@@ -530,9 +536,9 @@ version = "0.5.15"
 
 [[deps.Transducers]]
 deps = ["Adapt", "ArgCheck", "BangBang", "Baselet", "CompositionsBase", "DefineSingletons", "Distributed", "InitialValues", "Logging", "Markdown", "MicroCollections", "Requires", "Setfield", "SplittablesBase", "Tables"]
-git-tree-sha1 = "3f0945b47207a41946baee6d1385e4ca738c25f7"
+git-tree-sha1 = "a34f53c9e14d131b0ce114f591d3c5d428431ba0"
 uuid = "28d57a85-8fef-5791-bfe6-a80928e7c999"
-version = "0.4.68"
+version = "0.4.69"
 
 [[deps.UUIDs]]
 deps = ["Random", "SHA"]

@@ -54,7 +54,7 @@ const _TRUE_ = Ref(true)
 function fake_transduce(rf, xs, init, ::Val{IncludeInit} = Val(false)) where {IncludeInit}
     if IncludeInit
         if _TRUE_[]
-            return start(rf, init)
+            return completebasecase(rf, start(rf, init))
         end
     end
     if _TRUE_[]
@@ -62,9 +62,13 @@ function fake_transduce(rf, xs, init, ::Val{IncludeInit} = Val(false)) where {In
         for x in xs
             acc1 = next(rf, acc1, x)
         end
-        return acc1
+        return completebasecase(rf, acc1)
     else
-        return _combine(rf, fake_transduce(rf, xs, init), fake_transduce(rf, xs, init))
+        acc1 = fake_transduce(rf, xs, init)
+        acc2 = fake_transduce(rf, xs, init)
+        acc3 = _combine(rf, acc1, acc2)
+        acc4 = completebasecase(rf, acc3)
+        return acc4
     end
 end
 
@@ -98,7 +102,7 @@ function _infer_acctype(rf, init, arrays, include_init::Bool = false)
     )
     fake_args_tt = Tuple{map(Typeof, fake_args)...}
     acctype = CUDA.return_type(fake_transduce, fake_args_tt)
-    if acctype === Union{}
+    if acctype === Union{} || !Base.datatype_pointerfree(Some{acctype})
         host_args = (rf, zip(arrays...), init)
         acctype_host = Core.Compiler.return_type(fake_transduce, Tuple{map(Typeof, host_args)...})
         if RUN_ON_HOST_IF_NORETURN[] && acctype_host === Union{}
@@ -194,6 +198,13 @@ function _transduce!(buf, rf::F, init, arrays...) where {F}
     return dest, buf
 end
 
+# Since CUDA already requires that everything is inlined, `restack` is not
+# useful.  Instead, it's better to avoid introducing extra function calls to
+# reduce the change that inliner gives up.
+@static if isdefined(Transducers, :restack) && isdefined(CUDA, Symbol("@device_override"))
+    CUDA.@device_override Transducers.restack(x) = x
+end
+
 function transduce_kernel!(
     dest::Union{AbstractArray,Nothing},
     rf::F,
@@ -216,7 +227,7 @@ function transduce_kernel!(
             x1 = @inbounds getvalues(idx[i1], arrays...)
             @inline getinput(i) = @inbounds getvalues(idx[i], arrays...)
             xf = Map(getinput)
-            acc = foldl_nocomplete(
+            acc = foldl_basecase(
                 Reduction(xf, rf),
                 next(rf, start(rf, init), x1),
                 offset*basesize+2:min((offset + 1) * basesize, n),
