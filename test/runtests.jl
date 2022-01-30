@@ -7,5 +7,6 @@ if VERSION ≥ v"1.6-"
         push!(LOAD_PATH, "@stdlib")
     end
 end
-include("load.jl")
-FoldsCUDATests.runtests()
+
+using TestFunctionRunner
+TestFunctionRunner.@run(paths = ["../benchmark/FoldsCUDABenchmarks"])
