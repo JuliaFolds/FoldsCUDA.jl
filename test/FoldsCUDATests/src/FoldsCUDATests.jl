@@ -26,6 +26,11 @@ function runtests_unionarrays(; kwargs...)
 end
 
 function before_test_module()
+    if !CUDA.functional()
+        @info "CUDA.jl not functional"
+        return
+    end
+
     GPUArrays.allowscalar(false)
 
     if lowercase(get(ENV, "CI", "false")) == "true"
