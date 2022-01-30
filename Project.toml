@@ -5,14 +5,12 @@ version = "0.1.9-DEV"
 
 [deps]
 CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
-FLoopsBase = "b9860ae5-e623-471e-878b-f6a53c775ea6"
 InitialValues = "22cec73e-a1b8-11e9-2c92-598750a2cf9c"
 Transducers = "28d57a85-8fef-5791-bfe6-a80928e7c999"
 UnionArrays = "d6dd79e4-993b-11e9-1366-0de1c9fe1122"
 
 [compat]
 CUDA = "3.8"
-FLoopsBase = "0.1.1"
 InitialValues = "0.2, 0.3"
 Transducers = "0.4.63"
 UnionArrays = "0.1.2"

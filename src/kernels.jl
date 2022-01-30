@@ -49,19 +49,12 @@ function transduce_impl(rf::F, init, arrays...) where {F}
     end
 end
 
-
-afterbasecase(acc) = acc
-afterbasecase(::AbstractScratchSpace) = nothing
-@inline afterbasecase(acc::Tuple) = map(afterbasecase, acc)
-# @inline afterbasecase(acc::NamedTuple{names}) where {names} =
-#     NamedTuple{names}(map(afterbasecase, Tuple(acc)))
-
 const _TRUE_ = Ref(true)
 
 function fake_transduce(rf, xs, init, ::Val{IncludeInit} = Val(false)) where {IncludeInit}
     if IncludeInit
         if _TRUE_[]
-            return afterbasecase(completebasecase(rf, start(rf, init)))
+            return completebasecase(rf, start(rf, init))
         end
     end
     if _TRUE_[]
@@ -69,13 +62,13 @@ function fake_transduce(rf, xs, init, ::Val{IncludeInit} = Val(false)) where {In
         for x in xs
             acc1 = next(rf, acc1, x)
         end
-        return completebasecase(rf, afterbasecase(acc1))
+        return completebasecase(rf, acc1)
     else
         acc1 = fake_transduce(rf, xs, init)
         acc2 = fake_transduce(rf, xs, init)
-        acc3 = _combine(rf, afterbasecase(acc1), afterbasecase(acc2))
+        acc3 = _combine(rf, acc1, acc2)
         acc4 = completebasecase(rf, acc3)
-        return afterbasecase(acc4)
+        return acc4
     end
 end
 
@@ -264,7 +257,6 @@ function transduce_kernel!(
         shared = UnionVector(T, data, typeids)
     end
     if acc_isdefined
-        acc = afterbasecase(acc)
         # Manual union splitting (required for non-type-stable reduction like
         # `Folds.sum(last, pairs(xs))`):
         @manual_union_split(
