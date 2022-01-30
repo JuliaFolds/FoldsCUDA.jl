@@ -26,16 +26,16 @@ end</code></pre><p>Generate some random numbers</p><pre><code class="language-ju
 end
 @assert all(isfinite, xs)
 collect(view(xs, 1:10))  # preview</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">10-element Vector{Float64}:
- 3.6702701335618035e24
- 1.3276343191025104e20
- 1.151918813150362e31
- 2.2942475955793908e23
- 7.176462111982055e27
- 7.506154700407825e21
- 2.376716709691546e29
- 3.0951616692902546e29
- 8.774046025610836e25
- 1.9263983978473635e15</code></pre><p>Pass an array of (real) numbers to <code>histogram_msd</code> to compute the histogram of MSD:</p><pre><code class="language-julia hljs">hist1 = histogram_msd(xs)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">(30104899, 17611845, 12494417, 9691254, 7916256, 6691105, 5798952, 5115181, 4576091)</code></pre><p>Frequency in percentage:</p><pre><code class="language-julia hljs">aspercentage(h) = pairs(round.((collect(h) ./ length(xs) .* 100); digits = 1))
+ 5.776180671853105e30
+ 1.4565639248470182e29
+ 2.816876643382605e21
+ 8.015198666063239e27
+ 1.3051695254502188e28
+ 2.898613250461665e24
+ 4.079066109691316e20
+ 1.979815149646041e15
+ 3.029258736840315e26
+ 1.751990373787494e33</code></pre><p>Pass an array of (real) numbers to <code>histogram_msd</code> to compute the histogram of MSD:</p><pre><code class="language-julia hljs">hist1 = histogram_msd(xs)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">(30104288, 17610474, 12491145, 9687227, 7919705, 6696228, 5799318, 5114760, 4576855)</code></pre><p>Frequency in percentage:</p><pre><code class="language-julia hljs">aspercentage(h) = pairs(round.((collect(h) ./ length(xs) .* 100); digits = 1))
 aspercentage(hist1)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">pairs(::Vector{Float64})(...):
   1 =&gt; 30.1
   2 =&gt; 17.6
@@ -63,4 +63,4 @@ aspercentage(hist1)</code></pre><pre class="documenter-example-output"><code cla
   6 =&gt; 6.8
   7 =&gt; 5.9
   8 =&gt; 5.2
-  9 =&gt; 4.6</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../findminmax/">« <code>findminmax</code></a><a class="docs-footer-nextpage" href="../monte_carlo_pi/">Monte-Carlo π »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.12 on <span class="colophon-date" title="Sunday 30 January 2022 21:07">Sunday 30 January 2022</span>. Using Julia version 1.6.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+  9 =&gt; 4.6</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../findminmax/">« <code>findminmax</code></a><a class="docs-footer-nextpage" href="../monte_carlo_pi/">Monte-Carlo π »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.12 on <span class="colophon-date" title="Sunday 30 January 2022 21:55">Sunday 30 January 2022</span>. Using Julia version 1.6.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
