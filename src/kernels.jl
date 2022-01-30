@@ -234,7 +234,7 @@ function transduce_kernel!(
             x1 = @inbounds getvalues(idx[i1], arrays...)
             @inline getinput(i) = @inbounds getvalues(idx[i], arrays...)
             xf = Map(getinput)
-            acc = foldl_nocomplete(
+            acc = foldl_basecase(
                 Reduction(xf, rf),
                 next(rf, start(rf, init), x1),
                 offset*basesize+2:min((offset + 1) * basesize, n),
