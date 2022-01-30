@@ -12,6 +12,6 @@ UnionArrays = "d6dd79e4-993b-11e9-1366-0de1c9fe1122"
 [compat]
 CUDA = "3.8"
 InitialValues = "0.2, 0.3"
-Transducers = "0.4.63"
+Transducers = "0.4.69"
 UnionArrays = "0.1.2"
 julia = "1.6"
