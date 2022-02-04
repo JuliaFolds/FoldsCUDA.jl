@@ -66,9 +66,10 @@ function fake_transduce(rf, xs, init, ::Val{IncludeInit} = Val(false)) where {In
     else
         acc1 = fake_transduce(rf, xs, init)
         acc2 = fake_transduce(rf, xs, init)
-        acc3 = _combine(rf, acc1, acc2)
-        acc4 = completebasecase(rf, acc3)
-        return acc4
+        acc3 = completebasecase(rf, acc1)
+        acc4 = completebasecase(rf, acc2)
+        acc5 = _combine(rf, acc3, acc4)
+        return acc5
     end
 end
 
