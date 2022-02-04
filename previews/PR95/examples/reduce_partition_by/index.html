@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Partition reduce · FoldsCUDA</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.039/juliamono-regular.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><script src="../../../copy.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">FoldsCUDA</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">FoldsCUDA.jl</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../findminmax/"><code>findminmax</code></a></li><li><a class="tocitem" href="../histogram_msd/">Histogram of MSD</a></li><li><a class="tocitem" href="../monte_carlo_pi/">Monte-Carlo π</a></li><li><a class="tocitem" href="../inplace_mutation_with_referenceables/">In-place mutation with Referenceables.jl</a></li><li class="is-active"><a class="tocitem" href>Partition reduce</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>Partition reduce</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Partition reduce</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/JuliaFolds/FoldsCUDA.jl/blob/master/examples/reduce_partition_by.jl" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Partition-reduce-on-GPU"><a class="docs-heading-anchor" href="#Partition-reduce-on-GPU">Partition reduce on GPU</a><a id="Partition-reduce-on-GPU-1"></a><a class="docs-heading-anchor-permalink" href="#Partition-reduce-on-GPU" title="Permalink"></a></h1><p>By using <a href="https://juliafolds.github.io/Transducers.jl/dev/reference/manual/#Transducers.ReducePartitionBy"><code>ReducePartitionBy</code></a>, per-partition (group) can be computed on GPU in a streaming (single-pass) fashion.</p><pre><code class="language-julia hljs">using CUDA
+using CUDA: @allowscalar
+
+n = 2^24
+if has_cuda_gpu()
+    xs = CUDA.randn(n)
+else
+    xs = randn(n)
+end</code></pre><p><code>ReducePartitionBy</code> expects partition to be contiguous; e.g., sorted by the key. We will use <code>floor</code> as the key. So, plain <code>sort!</code> works in this example.</p><pre><code class="language-julia hljs">sort!(xs)</code></pre><p>In GPU, it is convenient to know the output location before computation. So, let us build unique index for each partition using <code>cumsum!</code>:</p><pre><code class="language-julia hljs">function buildindices(f, xs)
+    isedge(x, y) = !isequal(f(x), f(y))
+    bounds = similar(xs, Bool)
+    @views map!(isedge, bounds[2:end], xs[1:end-1], xs[2:end])
+    @allowscalar bounds[1] = true
+    partitionindices = similar(xs, Int32)
+    return cumsum!(partitionindices, bounds)
+end
+
+partitionindices_xs = buildindices(floor, xs)</code></pre><h3 id="Counting-the-size-of-each-partition"><a class="docs-heading-anchor" href="#Counting-the-size-of-each-partition">Counting the size of each partition</a><a id="Counting-the-size-of-each-partition-1"></a><a class="docs-heading-anchor-permalink" href="#Counting-the-size-of-each-partition" title="Permalink"></a></h3><pre><code class="language-julia hljs">import FoldsCUDA  # register the executor
+using FLoops
+using Transducers
+
+function countparts(partitionindices; ex = nothing)
+    nparts = @allowscalar partitionindices[end]
+    ys = similar(partitionindices, nparts)
+
+    # The intra-partition reducing function that reduces each partition to
+    # a 2-tuple of index and count:
+    rf_partition = Map(p -&gt; (p, 1))&#39;(ProductRF(right, +))
+
+    index_and_count =
+        partitionindices |&gt;
+        ReducePartitionBy(
+            identity,  # partition by partitionindices
+            rf_partition,
+            (-1, 0),
+        )
+
+    @floop ex for (p, c) in index_and_count
+        @inbounds ys[p] = c
+    end
+
+    return ys
+end
+
+c_xs = countparts(partitionindices_xs)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">12-element Vector{Int32}:
+       6
+     536
+   22093
+  359052
+ 2280777
+ 5724790
+ 5727726
+ 2280355
+  359472
+   21860
+     545
+       4</code></pre><h3 id="Computing-the-average-of-each-partition"><a class="docs-heading-anchor" href="#Computing-the-average-of-each-partition">Computing the average of each partition</a><a id="Computing-the-average-of-each-partition-1"></a><a class="docs-heading-anchor-permalink" href="#Computing-the-average-of-each-partition" title="Permalink"></a></h3><pre><code class="language-julia hljs">function meanparts(xs, partitionindices; ex = nothing)
+    nparts = @allowscalar partitionindices[end]
+    ys = similar(xs, float(eltype(xs)), nparts)
+
+    # The intra-partition reducing function that reduces each partition to
+    # a 3-tuple of index, count and sum:
+    rf_partition = Map(((i, p),) -&gt; (p, 1, (@inbounds xs[i])))&#39;(ProductRF(right, +, +))
+
+    index_count_and_sum =
+        pairs(partitionindices) |&gt;
+        ReducePartitionBy(
+            ((_, p),) -&gt; p,  # partition by partitionindices
+            rf_partition,
+            (-1, 0, zero(eltype(ys))),
+        )
+
+    @floop ex for (p, c, s) in index_count_and_sum
+        @inbounds ys[p] = s / c
+    end
+
+    return ys
+end
+
+m_xs = meanparts(xs, partitionindices_xs)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">12-element Vector{Float64}:
+ -5.162617381401869
+ -4.22043488199351
+ -3.259902792536734
+ -2.315791643436754
+ -1.3830622982916851
+ -0.45976836693695283
+  0.4599011299609821
+  1.3832746569295928
+  2.316013438910821
+  3.258218271686312
+  4.211034818922644
+  5.172779304496885</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../inplace_mutation_with_referenceables/">« In-place mutation with Referenceables.jl</a><a class="docs-footer-nextpage" href="../../deprecated/">Deprecated API »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.12 on <span class="colophon-date" title="Friday 4 February 2022 09:21">Friday 4 February 2022</span>. Using Julia version 1.6.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

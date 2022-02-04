@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Histogram of MSD · FoldsCUDA</title><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.039/juliamono-regular.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><script src="../../../copy.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">FoldsCUDA</a></span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">FoldsCUDA.jl</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../findminmax/"><code>findminmax</code></a></li><li class="is-active"><a class="tocitem" href>Histogram of MSD</a><ul class="internal"><li><a class="tocitem" href="#An-allocation-free-function-to-compute-MSD"><span>An allocation-free function to compute MSD</span></a></li><li><a class="tocitem" href="#MSD-of-random-numbers"><span>MSD of random numbers</span></a></li><li><a class="tocitem" href="#MSD-of-lazily-computed-numbers"><span>MSD of lazily computed numbers</span></a></li></ul></li><li><a class="tocitem" href="../monte_carlo_pi/">Monte-Carlo π</a></li><li><a class="tocitem" href="../inplace_mutation_with_referenceables/">In-place mutation with Referenceables.jl</a></li><li><a class="tocitem" href="../reduce_partition_by/">Partition reduce</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>Histogram of MSD</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Histogram of MSD</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/JuliaFolds/FoldsCUDA.jl/blob/master/examples/histogram_msd.jl" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Histogram-of-the-most-significant-digit-(MSD)"><a class="docs-heading-anchor" href="#Histogram-of-the-most-significant-digit-(MSD)">Histogram of the most significant digit (MSD)</a><a id="Histogram-of-the-most-significant-digit-(MSD)-1"></a><a class="docs-heading-anchor-permalink" href="#Histogram-of-the-most-significant-digit-(MSD)" title="Permalink"></a></h1><h2 id="An-allocation-free-function-to-compute-MSD"><a class="docs-heading-anchor" href="#An-allocation-free-function-to-compute-MSD">An allocation-free function to compute MSD</a><a id="An-allocation-free-function-to-compute-MSD-1"></a><a class="docs-heading-anchor-permalink" href="#An-allocation-free-function-to-compute-MSD" title="Permalink"></a></h2><pre><code class="language-julia hljs">function msd(x::Real)
+    x = abs(x)
+    d = x
+    while true
+        x &lt; 1 &amp;&amp; return floor(Int, d)
+        d = x
+        x ÷= 10
+    end
+end</code></pre><pre><code class="language-julia hljs">msd(34513)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">3</code></pre><pre><code class="language-julia hljs">msd(-51334)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">5</code></pre><pre><code class="language-julia hljs">msd(2.76e19)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">2</code></pre><h2 id="MSD-of-random-numbers"><a class="docs-heading-anchor" href="#MSD-of-random-numbers">MSD of random numbers</a><a id="MSD-of-random-numbers-1"></a><a class="docs-heading-anchor-permalink" href="#MSD-of-random-numbers" title="Permalink"></a></h2><pre><code class="language-julia hljs">using CUDA
+using FLoops
+using FoldsCUDA
+using Setfield
+
+function histogram_msd(xs, ex = nothing)
+    zs = ntuple(_ -&gt; 0, 9)  # a tuple of 9 zeros
+    @floop ex for x in xs
+        d = msd(x)
+        1 &lt;= d &lt;= 9 || continue  # skip it if `msd` returns 0
+        h2 = @set zs[d] = 1      # set `d`-th position of the tuple to 1
+        @reduce(h1 = zs .+ h2)   # point-wise addition merges the histogram
+    end
+    return h1
+end</code></pre><p>Generate some random numbers</p><pre><code class="language-julia hljs">xs = let randn = has_cuda_gpu() ? CUDA.randn : randn
+    exp.(10.0 .* (randn(10^8) .+ 6))
+end
+@assert all(isfinite, xs)
+collect(view(xs, 1:10))  # preview</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">10-element Vector{Float64}:
+ 1.3381113486418421e34
+ 2.3348912676063873e28
+ 4.551161957189125e26
+ 1.490198544412944e23
+ 4.646640855233135e31
+ 4.4592493424606734e20
+ 1.0398426788708324e21
+ 7.233996352707155e25
+ 9.416922461401133e25
+ 6.151225693246183e26</code></pre><p>Pass an array of (real) numbers to <code>histogram_msd</code> to compute the histogram of MSD:</p><pre><code class="language-julia hljs">hist1 = histogram_msd(xs)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">(30096733, 17612641, 12494064, 9692089, 7918250, 6695743, 5798200, 5116625, 4575655)</code></pre><p>Frequency in percentage:</p><pre><code class="language-julia hljs">aspercentage(h) = pairs(round.((collect(h) ./ length(xs) .* 100); digits = 1))
+aspercentage(hist1)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">pairs(::Vector{Float64})(...):
+  1 =&gt; 30.1
+  2 =&gt; 17.6
+  3 =&gt; 12.5
+  4 =&gt; 9.7
+  5 =&gt; 7.9
+  6 =&gt; 6.7
+  7 =&gt; 5.8
+  8 =&gt; 5.1
+  9 =&gt; 4.6</code></pre><h2 id="MSD-of-lazily-computed-numbers"><a class="docs-heading-anchor" href="#MSD-of-lazily-computed-numbers">MSD of lazily computed numbers</a><a id="MSD-of-lazily-computed-numbers-1"></a><a class="docs-heading-anchor-permalink" href="#MSD-of-lazily-computed-numbers" title="Permalink"></a></h2><p>FoldsCUDA supports running reduction over non-<code>CuArray</code> containers such as <code>UnitRange</code> and iterator transformation wrapping it. However, you need to explicitly specify to use CUDA by, e.g., passing <code>CUDAEx</code> to <code>@floop</code>:</p><pre><code class="language-julia hljs">hist2 = histogram_msd(x^2 for x in 1:10^8)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">(19156360, 14699187, 12391984, 10917564, 9870226, 9076617, 8448304, 7934816, 7504942)</code></pre><p>Frequency in percentage:</p><pre><code class="language-julia hljs">aspercentage(hist2)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">pairs(::Vector{Float64})(...):
+  1 =&gt; 19.2
+  2 =&gt; 14.7
+  3 =&gt; 12.4
+  4 =&gt; 10.9
+  5 =&gt; 9.9
+  6 =&gt; 9.1
+  7 =&gt; 8.4
+  8 =&gt; 7.9
+  9 =&gt; 7.5</code></pre><pre><code class="language-julia hljs">hist3 = histogram_msd(exp(x) for x in range(1, 35, length=10^8))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">(29897898, 16985662, 12691855, 9844565, 8043600, 6800762, 5891098, 5196305, 4648255)</code></pre><p>Frequency in percentage:</p><pre><code class="language-julia hljs">aspercentage(hist3)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">pairs(::Vector{Float64})(...):
+  1 =&gt; 29.9
+  2 =&gt; 17.0
+  3 =&gt; 12.7
+  4 =&gt; 9.8
+  5 =&gt; 8.0
+  6 =&gt; 6.8
+  7 =&gt; 5.9
+  8 =&gt; 5.2
+  9 =&gt; 4.6</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../findminmax/">« <code>findminmax</code></a><a class="docs-footer-nextpage" href="../monte_carlo_pi/">Monte-Carlo π »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.12 on <span class="colophon-date" title="Friday 4 February 2022 09:21">Friday 4 February 2022</span>. Using Julia version 1.6.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
